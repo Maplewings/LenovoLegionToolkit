@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using CCD;
+using CCD.Enum;
 using LenovoLegionToolkit.Lib;
 using LenovoLegionToolkit.Lib.Utils;
 using Microsoft.Win32.SafeHandles;
@@ -15,6 +17,9 @@ namespace LenovoLegionToolkit.WPF.Utils
 {
     internal unsafe class SystemEventInterceptor : NativeWindow
     {
+        private const int WM_DISPLAYCHANGE = 0x007e;//126
+        private const int WM_DEVICECHANGE = 0x0219;//537
+
         private readonly SafeHandle _safeHandle;
 
         private readonly uint _taskbarCreatedMessageId;
@@ -124,7 +129,44 @@ namespace LenovoLegionToolkit.WPF.Utils
                 }
             }
 
+            if (m.Msg == WM_DISPLAYCHANGE)
+            {
+                if (Log.Instance.IsTraceEnabled)
+                    Log.Instance.Trace($"WM_DISPLAYCHANGE received.");
+
+                ResetHWMonitorDPI();
+            }
+
             base.WndProc(ref m);
+        }
+
+
+        private void ResetHWMonitorDPI()
+        {
+            DisplayConfigTopologyId topologyId;
+            var list = CCDHelpers.GetPathWraps(QueryDisplayFlags.OnlyActivePaths, out topologyId);
+            foreach (var item in list)
+            {
+                var sourceModeInfo = item.Path.sourceInfo;
+                var targetModeInfo = item.Path.targetInfo;
+                var name = CCDHelpers.GetTargetDeviceName(targetModeInfo);
+
+                if (!name.StartsWith("HW", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    continue;
+                }
+
+                var dpiInfo = CCDHelpers.GetDPIScalingInfo(sourceModeInfo.adapterId, sourceModeInfo.id);
+
+                if (Log.Instance.IsTraceEnabled)
+                    Log.Instance.Trace($"hw screen name: {name}, current dpi: {dpiInfo.current}");
+
+                if (dpiInfo.current != dpiInfo.recommended)
+                {
+                    var result = CCDHelpers.SetDPIScaling(sourceModeInfo.adapterId, sourceModeInfo.id, dpiInfo.recommended);
+                    Log.Instance.Trace($"set recommended dpi: {dpiInfo.recommended}");
+                }
+            }
         }
     }
 }
