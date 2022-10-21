@@ -39,6 +39,7 @@ namespace LenovoLegionToolkit.WPF.Utils
                 NotificationIcon.TouchpadOff => SymbolRegular.Tablet24,
                 NotificationIcon.CameraOn => SymbolRegular.Camera24,
                 NotificationIcon.CameraOff => SymbolRegular.Camera24,
+                NotificationIcon.ScreenDPISet => SymbolRegular.DualScreenSettings24,
                 _ => SymbolRegular.Info24,
             };
 
