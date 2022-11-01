@@ -8,6 +8,7 @@ using CCD;
 using CCD.Enum;
 using LenovoLegionToolkit.Lib;
 using LenovoLegionToolkit.Lib.Extensions;
+using LenovoLegionToolkit.Lib.Features;
 using LenovoLegionToolkit.Lib.Utils;
 using Microsoft.Win32.SafeHandles;
 using Windows.Win32;
@@ -30,6 +31,7 @@ namespace LenovoLegionToolkit.WPF.Utils
         private readonly SafeHandle _powerNotificationHandle;
         private readonly HOOKPROC _kbProc;
         private readonly HHOOK _kbHook;
+        private readonly RefreshRateFeature refreshRateFeature = IoCContainer.Resolve<RefreshRateFeature>();
 
         public event EventHandler? OnTaskbarCreated;
         public event EventHandler? OnDisplayDeviceArrival;
@@ -192,6 +194,7 @@ namespace LenovoLegionToolkit.WPF.Utils
 
                 if (dpiInfo.current != dpiInfo.recommended)
                 {
+                    refreshRateFeature.SetStateAsync(new RefreshRate(165));
                     var result = CCDHelpers.SetDPIScaling(sourceModeInfo.adapterId, sourceModeInfo.id, dpiInfo.recommended);
                     Log.Instance.Trace($"set recommended dpi: {dpiInfo.recommended}");
                     MessagingCenter.Publish(new Notification(NotificationType.ScreenDPISet, NotificationDuration.Long, name));
