@@ -76,6 +76,16 @@ namespace LenovoLegionToolkit.WPF.Windows.Settings
             _settings.SynchronizeStore();
         }
 
+        private void SetScreenDPI_Click(object sender, RoutedEventArgs e)
+        {
+            var state = _SetScreenDPIToggle.IsChecked;
+            if (state is null)
+                return;
+
+            _settings.Store.Notifications.SetScreenDPI = state.Value;
+            _settings.SynchronizeStore();
+        }
+
         private void FnLockToggle_Click(object sender, RoutedEventArgs e)
         {
             var state = _fnLockToggle.IsChecked;
