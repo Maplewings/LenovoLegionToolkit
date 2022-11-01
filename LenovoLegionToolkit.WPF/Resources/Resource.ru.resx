@@ -90,7 +90,7 @@
     <value>Добавить</value>
   </data>
   <data name="AddNew" xml:space="preserve">
-    <value>Добавить новую</value>
+    <value>Добавить новое действие</value>
   </data>
   <data name="AlwaysActivatePowerPlans_Message" xml:space="preserve">
     <value>Активировать схемы питания даже при работе Vantage.
@@ -432,7 +432,7 @@
     <value>Модель</value>
   </data>
   <data name="DeviceInformationWindow_OutOfWarranty" xml:space="preserve">
-    <value>Истек</value>
+    <value>Не действует</value>
   </data>
   <data name="DeviceInformationWindow_SerialNumber_Title" xml:space="preserve">
     <value>Серийный номер</value>
@@ -453,7 +453,7 @@
     <value>Гарантия</value>
   </data>
   <data name="DiscreteGPUControl_Active" xml:space="preserve">
-    <value>Активный</value>
+    <value>Активен</value>
   </data>
   <data name="DiscreteGPUControl_Deactivate" xml:space="preserve">
     <value>Деактивировать</value>
@@ -467,7 +467,7 @@
     <value>Графический процессор nVidia не активен.</value>
   </data>
   <data name="DiscreteGPUControl_Inactive" xml:space="preserve">
-    <value>Неактивный</value>
+    <value>Неактивен</value>
   </data>
   <data name="DiscreteGPUControl_KillApps" xml:space="preserve">
     <value>Завершить процессы</value>
@@ -681,7 +681,7 @@
     <value>Подсветка клавиатуры</value>
   </data>
   <data name="MainWindow_NavigationItem_About" xml:space="preserve">
-    <value>О программе</value>
+    <value>О ПО</value>
   </data>
   <data name="MainWindow_NavigationItem_Actions" xml:space="preserve">
     <value>Действия</value>
@@ -693,7 +693,7 @@
     <value>Обзор</value>
   </data>
   <data name="MainWindow_NavigationItem_Donate" xml:space="preserve">
-    <value>Поддержка</value>
+    <value>Донат</value>
   </data>
   <data name="MainWindow_NavigationItem_Keyboard" xml:space="preserve">
     <value>Клавиатура</value>
@@ -718,6 +718,91 @@
   </data>
   <data name="No" xml:space="preserve">
     <value>Нет</value>
+  </data>
+  <data name="Notification_ACAdapterConnected" xml:space="preserve">
+    <value>Блок питания подключен</value>
+  </data>
+  <data name="Notification_ACAdapterConnectedLowWattage" xml:space="preserve">
+    <value>Блок питания подключен (низкая мощность)</value>
+  </data>
+  <data name="Notification_ACAdapterDisconnected" xml:space="preserve">
+    <value>Блок питания отключен</value>
+  </data>
+  <data name="Notification_CameraOff" xml:space="preserve">
+    <value>Камера отключена</value>
+  </data>
+  <data name="Notification_CameraOn" xml:space="preserve">
+    <value>Камера включена</value>
+  </data>
+  <data name="Notification_CapsLockOff" xml:space="preserve">
+    <value>Caps Lock отключен</value>
+  </data>
+  <data name="Notification_CapsLockOn" xml:space="preserve">
+    <value>Caps Lock включен</value>
+  </data>
+  <data name="Notification_FnLockOff" xml:space="preserve">
+    <value>Fn Lock отключен</value>
+  </data>
+  <data name="Notification_FnLockOn" xml:space="preserve">
+    <value>Fn Lock включен</value>
+  </data>
+  <data name="Notification_MicrophoneOff" xml:space="preserve">
+    <value>Микрофон отключен</value>
+  </data>
+  <data name="Notification_MicrophoneOn" xml:space="preserve">
+    <value>Микрофон включен</value>
+  </data>
+  <data name="Notification_NumLockOff" xml:space="preserve">
+    <value>Num Lock отключен</value>
+  </data>
+  <data name="Notification_NumLockOn" xml:space="preserve">
+    <value>Num Lock включен</value>
+  </data>
+  <data name="Notification_TouchpadOff" xml:space="preserve">
+    <value>Сенсорная панель отключена</value>
+  </data>
+  <data name="Notification_TouchpadOn" xml:space="preserve">
+    <value>Сенсорная панель включена</value>
+  </data>
+  <data name="Notification_WhiteKeyboardBacklight" xml:space="preserve">
+    <value>Подсветка {0}</value>
+  </data>
+  <data name="NotificationsSettingsWindow_ACAdapter" xml:space="preserve">
+    <value>Блок питания</value>
+  </data>
+  <data name="NotificationsSettingsWindow_Camera" xml:space="preserve">
+    <value>Камера</value>
+  </data>
+  <data name="NotificationsSettingsWindow_CapsAndNumLock" xml:space="preserve">
+    <value>Caps Lock и Num Lock</value>
+  </data>
+  <data name="NotificationsSettingsWindow_DontShowNotifications_Message" xml:space="preserve">
+    <value>Отключает уведомления о действиях клавиш Fn, таких как приглушение микрофона
+Включите эту опцию, если у вас возникают конфликты с полноэкранными приложениями.</value>
+  </data>
+  <data name="NotificationsSettingsWindow_DontShowNotifications_Title" xml:space="preserve">
+    <value>Не показывать уведомления</value>
+  </data>
+  <data name="NotificationsSettingsWindow_FnLock" xml:space="preserve">
+    <value>Fn Lock</value>
+  </data>
+  <data name="NotificationsSettingsWindow_KeyboardBacklight" xml:space="preserve">
+    <value>Подсветка клавиатуры</value>
+  </data>
+  <data name="NotificationsSettingsWindow_Microphone" xml:space="preserve">
+    <value>Микрофон</value>
+  </data>
+  <data name="NotificationsSettingsWindow_PowerMode" xml:space="preserve">
+    <value>Режим питания</value>
+  </data>
+  <data name="NotificationsSettingsWindow_RefreshRate" xml:space="preserve">
+    <value>Частота обновления</value>
+  </data>
+  <data name="NotificationsSettingsWindow_Title" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="NotificationsSettingsWindow_TouchpadLock" xml:space="preserve">
+    <value>Блокировка сенсорной панели</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>ОК</value>
@@ -838,7 +923,7 @@
     <value>Не удалось изменить режим питания</value>
   </data>
   <data name="PowerModeControl_Message" xml:space="preserve">
-    <value>Выбрать режим работы.
+    <value>Выберите режим работы.
 Переключение режима осуществляется с помощью Fn+Q. </value>
   </data>
   <data name="PowerModeControl_Settings" xml:space="preserve">
@@ -964,6 +1049,9 @@
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>
   </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Сохранение...</value>
+  </data>
   <data name="SettingsPage_AccentColor_Description" xml:space="preserve">
     <value>Изменить контрастный цвет приложения.</value>
   </data>
@@ -977,8 +1065,7 @@
     <value>Доп. настройки</value>
   </data>
   <data name="SettingsPage_Autorun_Message" xml:space="preserve">
-    <value>Запуск свернутым в область уведомлений при входе в Windows.
-Запуск откладывается на 30 секунд по причинам совместимости.</value>
+    <value>Запускать свернутым при входе в Windows.</value>
   </data>
   <data name="SettingsPage_Autorun_Title" xml:space="preserve">
     <value>Автозагрузка</value>
@@ -1026,13 +1113,6 @@
   <data name="SettingsPage_DisableVantage_Title" xml:space="preserve">
     <value>Отключить Lenovo Vantage</value>
   </data>
-  <data name="SettingsPage_DontShowNotifications_Message" xml:space="preserve">
-    <value>Отключает уведомления о действиях клавиш Fn, таких как приглушение микрофона
-Включите эту опцию, если у вас возникают конфликты с полноэкранными приложениями.</value>
-  </data>
-  <data name="SettingsPage_DontShowNotifications_Title" xml:space="preserve">
-    <value>Не показывать уведомления</value>
-  </data>
   <data name="SettingsPage_EnableLegionZone_Error_Message" xml:space="preserve">
     <value>Возможно, Legion Zone был неверно запущен</value>
   </data>
@@ -1068,6 +1148,12 @@
   </data>
   <data name="SettingsPage_MinimizeOnClose_Title" xml:space="preserve">
     <value>Сворачивать при закрытии</value>
+  </data>
+  <data name="SettingsPage_Notifications_Message" xml:space="preserve">
+    <value>Настройте, какие уведомления будут отображаться</value>
+  </data>
+  <data name="SettingsPage_Notifications_Title" xml:space="preserve">
+    <value>Уведомления</value>
   </data>
   <data name="SettingsPage_PowerPlans_Title" xml:space="preserve">
     <value>Схемы питания</value>
