@@ -194,7 +194,7 @@ namespace LenovoLegionToolkit.WPF.Utils
                 {
                     var result = CCDHelpers.SetDPIScaling(sourceModeInfo.adapterId, sourceModeInfo.id, dpiInfo.recommended);
                     Log.Instance.Trace($"set recommended dpi: {dpiInfo.recommended}");
-                    MessagingCenter.Publish(new Notification(NotificationIcon.ScreenDPISet, $"SET API : {name}", NotificationDuration.Long));
+                    MessagingCenter.Publish(new Notification(NotificationType.ScreenDPISet, NotificationDuration.Long, name));
                 }
             }
         }

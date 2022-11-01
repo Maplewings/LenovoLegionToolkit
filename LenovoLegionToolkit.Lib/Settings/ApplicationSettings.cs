@@ -8,6 +8,7 @@ namespace LenovoLegionToolkit.Lib.Settings
         public class Notifications
         {
             public bool CapsNumLock { get; set; }
+            public bool SetScreenDPI { get; set; }
             public bool FnLock { get; set; }
             public bool TouchpadLock { get; set; } = true;
             public bool KeyboardBacklight { get; set; } = true;
