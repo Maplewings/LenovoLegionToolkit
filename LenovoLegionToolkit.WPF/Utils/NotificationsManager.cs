@@ -129,7 +129,7 @@ namespace LenovoLegionToolkit.WPF.Utils
                 NotificationType.RefreshRate => string.Format("{0}", notification.Args),
                 NotificationType.RGBKeyboardPreset => string.Format("{0}", notification.Args),
                 NotificationType.RGBKeyboardPresetOff => string.Format("{0}", notification.Args),
-                NotificationType.ScreenDPISet => string.Format("SET API : {0}", notification.Args),
+                NotificationType.ScreenDPISet => string.Format("SET DPI : {0}", notification.Args),
                 NotificationType.TouchpadOn => Resource.Notification_TouchpadOn,
                 NotificationType.TouchpadOff => Resource.Notification_TouchpadOff,
                 NotificationType.WhiteKeyboardBacklight => string.Format(Resource.Notification_WhiteKeyboardBacklight, notification.Args),

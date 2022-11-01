@@ -34,6 +34,7 @@ namespace LenovoLegionToolkit.WPF.Windows.Settings
             _dontShowNotificationsToggle.IsChecked = _settings.Store.DontShowNotifications;
 
             _capsNumLockToggle.IsChecked = _settings.Store.Notifications.CapsNumLock;
+            _SetScreenDPIToggle.IsChecked = _settings.Store.Notifications.SetScreenDPI;
             _fnLockToggle.IsChecked = _settings.Store.Notifications.FnLock;
             _touchpadLockToggle.IsChecked = _settings.Store.Notifications.TouchpadLock;
             _keyboardBacklightToggle.IsChecked = _settings.Store.Notifications.KeyboardBacklight;
