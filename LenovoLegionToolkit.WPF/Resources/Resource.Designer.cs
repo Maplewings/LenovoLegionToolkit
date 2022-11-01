@@ -2005,6 +2005,259 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AC adapter connected.
+        /// </summary>
+        public static string Notification_ACAdapterConnected {
+            get {
+                return ResourceManager.GetString("Notification_ACAdapterConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AC adapter connected (Low wattage).
+        /// </summary>
+        public static string Notification_ACAdapterConnectedLowWattage {
+            get {
+                return ResourceManager.GetString("Notification_ACAdapterConnectedLowWattage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AC adapter disconnected.
+        /// </summary>
+        public static string Notification_ACAdapterDisconnected {
+            get {
+                return ResourceManager.GetString("Notification_ACAdapterDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera off.
+        /// </summary>
+        public static string Notification_CameraOff {
+            get {
+                return ResourceManager.GetString("Notification_CameraOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera on.
+        /// </summary>
+        public static string Notification_CameraOn {
+            get {
+                return ResourceManager.GetString("Notification_CameraOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caps Lock off.
+        /// </summary>
+        public static string Notification_CapsLockOff {
+            get {
+                return ResourceManager.GetString("Notification_CapsLockOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caps Lock on.
+        /// </summary>
+        public static string Notification_CapsLockOn {
+            get {
+                return ResourceManager.GetString("Notification_CapsLockOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fn Lock off.
+        /// </summary>
+        public static string Notification_FnLockOff {
+            get {
+                return ResourceManager.GetString("Notification_FnLockOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fn Lock on.
+        /// </summary>
+        public static string Notification_FnLockOn {
+            get {
+                return ResourceManager.GetString("Notification_FnLockOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microphone off.
+        /// </summary>
+        public static string Notification_MicrophoneOff {
+            get {
+                return ResourceManager.GetString("Notification_MicrophoneOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microphone on.
+        /// </summary>
+        public static string Notification_MicrophoneOn {
+            get {
+                return ResourceManager.GetString("Notification_MicrophoneOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Num Lock off.
+        /// </summary>
+        public static string Notification_NumLockOff {
+            get {
+                return ResourceManager.GetString("Notification_NumLockOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Num Lock on.
+        /// </summary>
+        public static string Notification_NumLockOn {
+            get {
+                return ResourceManager.GetString("Notification_NumLockOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Touchpad off.
+        /// </summary>
+        public static string Notification_TouchpadOff {
+            get {
+                return ResourceManager.GetString("Notification_TouchpadOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Touchpad on.
+        /// </summary>
+        public static string Notification_TouchpadOn {
+            get {
+                return ResourceManager.GetString("Notification_TouchpadOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backlight {0}.
+        /// </summary>
+        public static string Notification_WhiteKeyboardBacklight {
+            get {
+                return ResourceManager.GetString("Notification_WhiteKeyboardBacklight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AC Adapter.
+        /// </summary>
+        public static string NotificationsSettingsWindow_ACAdapter {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_ACAdapter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
+        /// </summary>
+        public static string NotificationsSettingsWindow_Camera {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_Camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caps Lock and Num Lock.
+        /// </summary>
+        public static string NotificationsSettingsWindow_CapsAndNumLock {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_CapsAndNumLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disables notification for Fn keys actions like microphone mute
+        ///Enable this option if you have conflicts with full screen applications..
+        /// </summary>
+        public static string NotificationsSettingsWindow_DontShowNotifications_Message {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_DontShowNotifications_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t show notifications.
+        /// </summary>
+        public static string NotificationsSettingsWindow_DontShowNotifications_Title {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_DontShowNotifications_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fn Lock.
+        /// </summary>
+        public static string NotificationsSettingsWindow_FnLock {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_FnLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard Backlight.
+        /// </summary>
+        public static string NotificationsSettingsWindow_KeyboardBacklight {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_KeyboardBacklight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microphone.
+        /// </summary>
+        public static string NotificationsSettingsWindow_Microphone {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_Microphone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power Mode.
+        /// </summary>
+        public static string NotificationsSettingsWindow_PowerMode {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_PowerMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh Rate.
+        /// </summary>
+        public static string NotificationsSettingsWindow_RefreshRate {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_RefreshRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string NotificationsSettingsWindow_Title {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Touchpad Lock.
+        /// </summary>
+        public static string NotificationsSettingsWindow_TouchpadLock {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_TouchpadLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OK {
@@ -2730,6 +2983,15 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saving....
+        /// </summary>
+        public static string Saving {
+            get {
+                return ResourceManager.GetString("Saving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change the accent color of the app..
         /// </summary>
         public static string SettingsPage_AccentColor_Description {
@@ -2766,8 +3028,7 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start minimized to tray when you log in to Windows.
-        ///Startup is delayed by 30 seconds for compatibility reasons..
+        ///   Looks up a localized string similar to Start minimized to tray when you log in to Windows..
         /// </summary>
         public static string SettingsPage_Autorun_Message {
             get {
@@ -2906,25 +3167,6 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disables notification for Fn keys actions like microphone mute
-        ///Enable this option if you have conflicts with full screen applications..
-        /// </summary>
-        public static string SettingsPage_DontShowNotifications_Message {
-            get {
-                return ResourceManager.GetString("SettingsPage_DontShowNotifications_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Don&apos;t show notifications.
-        /// </summary>
-        public static string SettingsPage_DontShowNotifications_Title {
-            get {
-                return ResourceManager.GetString("SettingsPage_DontShowNotifications_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Legion Zone may have not been enabled correctly.
         /// </summary>
         public static string SettingsPage_EnableLegionZone_Error_Message {
@@ -3029,6 +3271,24 @@ namespace LenovoLegionToolkit.WPF.Resources {
         public static string SettingsPage_MinimizeOnClose_Title {
             get {
                 return ResourceManager.GetString("SettingsPage_MinimizeOnClose_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure which notifications are shown..
+        /// </summary>
+        public static string SettingsPage_Notifications_Message {
+            get {
+                return ResourceManager.GetString("SettingsPage_Notifications_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string SettingsPage_Notifications_Title {
+            get {
+                return ResourceManager.GetString("SettingsPage_Notifications_Title", resourceCulture);
             }
         }
         

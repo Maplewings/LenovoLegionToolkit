@@ -2,13 +2,16 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Interop;
 using CCD;
 using CCD.Enum;
 using LenovoLegionToolkit.Lib;
+using LenovoLegionToolkit.Lib.Extensions;
 using LenovoLegionToolkit.Lib.Utils;
 using Microsoft.Win32.SafeHandles;
 using Windows.Win32;
+using Windows.Win32.Foundation;
 using Windows.Win32.System.Power;
 using Windows.Win32.System.SystemServices;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -25,6 +28,8 @@ namespace LenovoLegionToolkit.WPF.Utils
         private readonly uint _taskbarCreatedMessageId;
         private readonly void* _displayArrivalHandle;
         private readonly SafeHandle _powerNotificationHandle;
+        private readonly HOOKPROC _kbProc;
+        private readonly HHOOK _kbHook;
 
         public event EventHandler? OnTaskbarCreated;
         public event EventHandler? OnDisplayDeviceArrival;
@@ -35,9 +40,13 @@ namespace LenovoLegionToolkit.WPF.Utils
             var ptr = new WindowInteropHelper(parent).Handle;
             _safeHandle = new SafeAccessTokenHandle(ptr);
 
+            _kbProc = LowLevelKeyboardProc;
+            _kbHook = PInvoke.SetWindowsHookEx(WINDOWS_HOOK_ID.WH_KEYBOARD_LL, _kbProc, HINSTANCE.Null, 0);
+
             _taskbarCreatedMessageId = RegisterTaskbarCreatedMessage();
             _displayArrivalHandle = RegisterDisplayArrival(_safeHandle);
-            _powerNotificationHandle = RegisterPowerNotification(_safeHandle);
+
+            _powerNotificationHandle = PInvoke.RegisterPowerSettingNotification(_safeHandle, PInvoke.GUID_MONITOR_POWER_ON, 0);
 
             parent.Closed += Parent_Closed;
 
@@ -46,6 +55,8 @@ namespace LenovoLegionToolkit.WPF.Utils
 
         private void Parent_Closed(object? sender, EventArgs e)
         {
+            PInvoke.UnhookWindowsHookEx(_kbHook);
+
             PInvoke.UnregisterDeviceNotification(_displayArrivalHandle);
             PInvoke.UnregisterPowerSettingNotification(new HPOWERNOTIFY(_powerNotificationHandle.DangerousGetHandle()));
 
@@ -59,11 +70,6 @@ namespace LenovoLegionToolkit.WPF.Utils
             var message = PInvoke.RegisterWindowMessage("TaskbarCreated");
             PInvoke.ChangeWindowMessageFilter(message, CHANGE_WINDOW_MESSAGE_FILTER_FLAGS.MSGFLT_ADD);
             return message;
-        }
-
-        private static SafeHandle RegisterPowerNotification(SafeHandle handle)
-        {
-            return PInvoke.RegisterPowerSettingNotification(handle, PInvoke.GUID_MONITOR_POWER_ON, 0);
         }
 
         private static void* RegisterDisplayArrival(SafeHandle handle)
@@ -102,8 +108,9 @@ namespace LenovoLegionToolkit.WPF.Utils
                     var powerBroadcastSettings = Marshal.PtrToStructure<POWERBROADCAST_SETTING>(m.LParam);
                     if (powerBroadcastSettings.PowerSetting == PInvoke.GUID_MONITOR_POWER_ON)
                     {
-                        var data = powerBroadcastSettings.Data._0;
-                        if (data == 1)
+                        var data = new byte[1];
+                        Marshal.Copy(new IntPtr(powerBroadcastSettings.Data.Value), data, 0, 1);
+                        if (data[0] == 1)
                             OnResumed?.Invoke(this, EventArgs.Empty);
                     }
                 }
@@ -138,6 +145,28 @@ namespace LenovoLegionToolkit.WPF.Utils
             }
 
             base.WndProc(ref m);
+        }
+
+        private LRESULT LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+        {
+            if (nCode == PInvoke.HC_ACTION && wParam.Value == PInvoke.WM_KEYUP)
+            {
+                var kbStruct = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(new IntPtr(lParam.Value));
+
+                if (kbStruct.vkCode == PInvokeExtensions.VK_CAPITAL)
+                {
+                    var isOn = Keyboard.IsKeyToggled(Key.CapsLock);
+                    MessagingCenter.Publish(new Notification(isOn ? NotificationType.CapsLockOn : NotificationType.CapsLockOff, NotificationDuration.Short));
+                }
+
+                if (kbStruct.vkCode == PInvokeExtensions.VK_NUMLOCK)
+                {
+                    var isOn = Keyboard.IsKeyToggled(Key.NumLock);
+                    MessagingCenter.Publish(new Notification(isOn ? NotificationType.NumLockOn : NotificationType.NumLockOff, NotificationDuration.Short));
+                }
+            }
+
+            return PInvoke.CallNextHookEx(HHOOK.Null, nCode, wParam, lParam);
         }
 
 

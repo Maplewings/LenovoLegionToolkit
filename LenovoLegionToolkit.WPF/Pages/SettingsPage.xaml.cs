@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using LenovoLegionToolkit.Lib;
 using LenovoLegionToolkit.Lib.Controllers;
 using LenovoLegionToolkit.Lib.Extensions;
+using LenovoLegionToolkit.Lib.Features;
 using LenovoLegionToolkit.Lib.Settings;
 using LenovoLegionToolkit.Lib.System;
 using LenovoLegionToolkit.Lib.Utils;
@@ -18,10 +19,15 @@ namespace LenovoLegionToolkit.WPF.Pages
     public partial class SettingsPage
     {
         private readonly ApplicationSettings _settings = IoCContainer.Resolve<ApplicationSettings>();
+
         private readonly Vantage _vantage = IoCContainer.Resolve<Vantage>();
         private readonly LegionZone _legionZone = IoCContainer.Resolve<LegionZone>();
         private readonly FnKeys _fnKeys = IoCContainer.Resolve<FnKeys>();
+
+        private readonly PowerModeFeature _powerModeFeature = IoCContainer.Resolve<PowerModeFeature>();
+
         private readonly RGBKeyboardBacklightController _rgbKeyboardBacklightController = IoCContainer.Resolve<RGBKeyboardBacklightController>();
+
         private readonly ThemeManager _themeManager = IoCContainer.Resolve<ThemeManager>();
 
         private bool _isRefreshing;
@@ -62,7 +68,7 @@ namespace LenovoLegionToolkit.WPF.Pages
 
             _themeComboBox.SetItems(Enum.GetValues<Theme>(), _settings.Store.Theme, t => t.GetDisplayName());
             _accentColor.SetColor(_settings.Store.AccentColor ?? _themeManager.DefaultAccentColor);
-            _autorunToggle.IsChecked = Autorun.IsEnabled;
+            _autorunComboBox.SetItems(Enum.GetValues<AutorunState>(), Autorun.State, t => t.GetDisplayName());
             _minimizeOnCloseToggle.IsChecked = _settings.Store.MinimizeOnClose;
 
             var vantageStatus = await _vantage.GetStatusAsync();
@@ -77,20 +83,19 @@ namespace LenovoLegionToolkit.WPF.Pages
             _fnKeysCard.Visibility = fnKeysStatus != SoftwareStatus.NotFound ? Visibility.Visible : Visibility.Collapsed;
             _fnKeysToggle.IsChecked = fnKeysStatus == SoftwareStatus.Disabled;
 
-            _dontShowNotificationsToggle.IsChecked = _settings.Store.DontShowNotifications;
-            _dontShowNotificationsCard.Visibility = fnKeysStatus == SoftwareStatus.Disabled ? Visibility.Visible : Visibility.Collapsed;
+            _notificationsCard.Visibility = fnKeysStatus != SoftwareStatus.Enabled ? Visibility.Visible : Visibility.Collapsed;
+            _excludeRefreshRatesCard.Visibility = fnKeysStatus != SoftwareStatus.Enabled ? Visibility.Visible : Visibility.Collapsed;
 
-            _excludeRefreshRatesCard.Visibility = fnKeysStatus == SoftwareStatus.Disabled ? Visibility.Visible : Visibility.Collapsed;
+            _powerPlansCard.Visibility = await _powerModeFeature.IsSupportedAsync() ? Visibility.Visible : Visibility.Collapsed;
 
             await loadingTask;
 
             _themeComboBox.Visibility = Visibility.Visible;
-            _autorunToggle.Visibility = Visibility.Visible;
+            _autorunComboBox.Visibility = Visibility.Visible;
             _minimizeOnCloseToggle.Visibility = Visibility.Visible;
             _vantageToggle.Visibility = Visibility.Visible;
             _legionZoneToggle.Visibility = Visibility.Visible;
             _fnKeysToggle.Visibility = Visibility.Visible;
-            _dontShowNotificationsToggle.Visibility = Visibility.Visible;
 
             _isRefreshing = false;
         }
@@ -133,19 +138,15 @@ namespace LenovoLegionToolkit.WPF.Pages
             _themeManager.Apply();
         }
 
-        private void AutorunToggle_Click(object sender, RoutedEventArgs e)
+        private void AutorunComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_isRefreshing)
                 return;
 
-            var state = _autorunToggle.IsChecked;
-            if (state is null)
+            if (!_autorunComboBox.TryGetSelectedItem(out AutorunState state))
                 return;
 
-            if (state.Value)
-                Autorun.Enable();
-            else
-                Autorun.Disable();
+            Autorun.Set(state);
         }
 
         private void MinimizeOnCloseToggle_Click(object sender, RoutedEventArgs e)
@@ -186,10 +187,13 @@ namespace LenovoLegionToolkit.WPF.Pages
 
                 try
                 {
-                    if (Log.Instance.IsTraceEnabled)
-                        Log.Instance.Trace($"Setting light control owner and restoring preset...");
+                    if (_rgbKeyboardBacklightController.IsSupported())
+                    {
+                        if (Log.Instance.IsTraceEnabled)
+                            Log.Instance.Trace($"Setting light control owner and restoring preset...");
 
-                    await _rgbKeyboardBacklightController.SetLightControlOwnerAsync(true, true);
+                        await _rgbKeyboardBacklightController.SetLightControlOwnerAsync(true, true);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -201,10 +205,13 @@ namespace LenovoLegionToolkit.WPF.Pages
             {
                 try
                 {
-                    if (Log.Instance.IsTraceEnabled)
-                        Log.Instance.Trace($"Setting light control owner...");
+                    if (_rgbKeyboardBacklightController.IsSupported())
+                    {
+                        if (Log.Instance.IsTraceEnabled)
+                            Log.Instance.Trace($"Setting light control owner...");
 
-                    await _rgbKeyboardBacklightController.SetLightControlOwnerAsync(false);
+                        await _rgbKeyboardBacklightController.SetLightControlOwnerAsync(false);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -303,26 +310,21 @@ namespace LenovoLegionToolkit.WPF.Pages
 
             _fnKeysToggle.IsEnabled = true;
 
-            _dontShowNotificationsCard.Visibility = state.Value ? Visibility.Visible : Visibility.Collapsed;
+            _notificationsCard.Visibility = state.Value ? Visibility.Visible : Visibility.Collapsed;
             _excludeRefreshRatesCard.Visibility = state.Value ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void DontShowNotificationsToggle_Click(object sender, RoutedEventArgs e)
+        private void NotificationsCard_Click(object sender, RoutedEventArgs e)
         {
-            if (_isRefreshing)
-                return;
-
-            _dontShowNotificationsToggle.IsEnabled = false;
-
-            var state = _dontShowNotificationsToggle.IsChecked;
-            if (state is null)
-                return;
-
-            _settings.Store.DontShowNotifications = state.Value;
-            _settings.SynchronizeStore();
-
-            _dontShowNotificationsToggle.IsEnabled = true;
+            var window = new NotificationsSettingsWindow
+            {
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ShowInTaskbar = false,
+            };
+            window.ShowDialog();
         }
+
         private void ExcludeRefreshRates_Click(object sender, RoutedEventArgs e)
         {
             var window = new ExcludeRefreshRatesWindow
