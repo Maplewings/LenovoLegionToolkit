@@ -463,6 +463,35 @@ namespace LenovoLegionToolkit.Lib
         }
     }
 
+
+    public struct ScreenDPI : IDisplayName, IEquatable<ScreenDPI>
+    {
+        public int DPI { get; }
+
+        [JsonIgnore]
+        public string DisplayName => $"{DPI}%";
+
+        [JsonConstructor]
+        public ScreenDPI(int dpi)
+        {
+            DPI = dpi;
+        }
+
+        #region Equality
+
+        public override bool Equals(object? obj) => obj is ScreenDPI rate && Equals(rate);
+
+        public bool Equals(ScreenDPI other) => DPI == other.DPI;
+
+        public override int GetHashCode() => HashCode.Combine(DPI);
+
+        public static bool operator ==(ScreenDPI left, ScreenDPI right) => left.Equals(right);
+
+        public static bool operator !=(ScreenDPI left, ScreenDPI right) => !(left == right);
+
+        #endregion
+    }
+
     public struct RefreshRate : IDisplayName, IEquatable<RefreshRate>
     {
         public int Frequency { get; }
@@ -476,7 +505,7 @@ namespace LenovoLegionToolkit.Lib
             Frequency = frequency;
         }
 
-        #region Equality
+         #region Equality
 
         public override bool Equals(object? obj) => obj is RefreshRate rate && Equals(rate);
 

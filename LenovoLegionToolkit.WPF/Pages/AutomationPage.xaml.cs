@@ -279,6 +279,7 @@ namespace LenovoLegionToolkit.WPF.Pages
             triggers.AddRange(new IAutomationPipelineTrigger[]
             {
                 new ACAdapterDisconnectedAutomationPipelineTrigger(),
+                new DisplayChangeAutomationPipelineTrigger(),
                 new PowerModeAutomationPipelineTrigger(PowerModeState.Balance),
                 new ProcessesAreRunningAutomationPipelineTrigger(Array.Empty<ProcessInfo>()),
                 new ProcessesStopRunningAutomationPipelineTrigger(Array.Empty<ProcessInfo>()),
