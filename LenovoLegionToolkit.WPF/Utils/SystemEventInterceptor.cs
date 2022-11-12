@@ -31,7 +31,6 @@ namespace LenovoLegionToolkit.WPF.Utils
         private readonly SafeHandle _powerNotificationHandle;
         private readonly HOOKPROC _kbProc;
         private readonly HHOOK _kbHook;
-        private readonly RefreshRateFeature refreshRateFeature = IoCContainer.Resolve<RefreshRateFeature>();
 
         public event EventHandler? OnTaskbarCreated;
         public event EventHandler? OnDisplayDeviceArrival;
@@ -138,14 +137,6 @@ namespace LenovoLegionToolkit.WPF.Utils
                 }
             }
 
-            if (m.Msg == WM_DISPLAYCHANGE)
-            {
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"WM_DISPLAYCHANGE received.");
-
-                ResetHWMonitorDPI();
-            }
-
             base.WndProc(ref m);
         }
 
@@ -171,35 +162,5 @@ namespace LenovoLegionToolkit.WPF.Utils
             return PInvoke.CallNextHookEx(HHOOK.Null, nCode, wParam, lParam);
         }
 
-
-        private void ResetHWMonitorDPI()
-        {
-            DisplayConfigTopologyId topologyId;
-            var list = CCDHelpers.GetPathWraps(QueryDisplayFlags.OnlyActivePaths, out topologyId);
-            foreach (var item in list)
-            {
-                var sourceModeInfo = item.Path.sourceInfo;
-                var targetModeInfo = item.Path.targetInfo;
-                var name = CCDHelpers.GetTargetDeviceName(targetModeInfo);
-
-                if (!name.StartsWith("HW", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    continue;
-                }
-
-                var dpiInfo = CCDHelpers.GetDPIScalingInfo(sourceModeInfo.adapterId, sourceModeInfo.id);
-
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"hw screen name: {name}, current dpi: {dpiInfo.current}");
-
-                if (dpiInfo.current != dpiInfo.recommended)
-                {
-                    refreshRateFeature.SetStateAsync(new RefreshRate(165));
-                    var result = CCDHelpers.SetDPIScaling(sourceModeInfo.adapterId, sourceModeInfo.id, dpiInfo.recommended);
-                    Log.Instance.Trace($"set recommended dpi: {dpiInfo.recommended}");
-                    MessagingCenter.Publish(new Notification(NotificationType.ScreenDPISet, NotificationDuration.Long, name));
-                }
-            }
-        }
     }
 }
