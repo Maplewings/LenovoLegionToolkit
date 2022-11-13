@@ -11,8 +11,8 @@ namespace LenovoLegionToolkit.WPF.Controls.Automation.Steps
         public ScreenDPIAutomationStepControl(IAutomationStep<ScreenDPI> dpi) : base(dpi)
         {
             Icon = SymbolRegular.Laptop24;
-            Title = "屏幕DPI";
-            Subtitle = "设置华为平板屏幕DPI，之后会按照屏幕规则单独配置。";
+            Title = Resource.ScreenDPIAutomationStepControl_Title;
+            Subtitle = Resource.ScreenDPIAutomationStepControl_Message;
         }
     }
 }
