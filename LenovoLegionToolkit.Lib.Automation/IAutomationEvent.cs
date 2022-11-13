@@ -4,6 +4,8 @@
 
     public struct StartupAutomationEvent : IAutomationEvent { }
 
+    public struct DisplayChangedAutomationEvent : IAutomationEvent { }
+
     public struct PowerStateAutomationEvent : IAutomationEvent { }
 
     public struct PowerModeAutomationEvent : IAutomationEvent

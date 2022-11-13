@@ -12,7 +12,7 @@ namespace LenovoLegionToolkit.Lib.Automation.Pipeline.Triggers
 
         public Task<bool> IsSatisfiedAsync(IAutomationEvent automationEvent)
         {
-            return Task.FromResult(automationEvent is StartupAutomationEvent);
+            return Task.FromResult(automationEvent is DisplayChangedAutomationEvent);
         }
 
         public IAutomationPipelineTrigger DeepCopy() => new DisplayChangeAutomationPipelineTrigger();
