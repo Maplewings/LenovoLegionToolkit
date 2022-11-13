@@ -12,7 +12,7 @@ namespace LenovoLegionToolkit.Lib.Automation.Steps
         public ScreenDPI State { get; }
 
         [JsonConstructor]
-        public ScreenDPIAutomationStep(ScreenDPI dpi) => State = dpi;
+        public ScreenDPIAutomationStep(ScreenDPI state) => State = state;
 
         public Task<bool> IsSupportedAsync() => Task.FromResult(true);
 
@@ -49,10 +49,10 @@ namespace LenovoLegionToolkit.Lib.Automation.Steps
                 if (Log.Instance.IsTraceEnabled)
                     Log.Instance.Trace($"hw screen name: {name}, current dpi: {dpiInfo.current}");
 
-                if (dpiInfo.current != dpiInfo.recommended)
+                if (dpiInfo.current != State.DPI)
                 {
-                    var result = CCDHelpers.SetDPIScaling(sourceModeInfo.adapterId, sourceModeInfo.id, dpiInfo.recommended);
-                    Log.Instance.Trace($"set recommended dpi: {dpiInfo.recommended}");
+                    var result = CCDHelpers.SetDPIScaling(sourceModeInfo.adapterId, sourceModeInfo.id, (uint)State.DPI);
+                    Log.Instance.Trace($"set screen dpi: {State.DisplayName}");
                     MessagingCenter.Publish(new Notification(NotificationType.ScreenDPISet, NotificationDuration.Long, name));
                 }
             }
