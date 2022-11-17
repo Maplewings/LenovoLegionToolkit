@@ -7,6 +7,15 @@
 [![Join Discord](https://img.shields.io/discord/761178912230473768?label=Legion%20Series%20Discord)](https://discord.com/invite/legionseries)
 
 ---
+**本人添加了显示设置变化的自动化触发器，用于监听屏幕显示的变化，自动设置华为平板的屏幕缩放**
+
+当使用华为平板的扩展模式连接电脑时，Y9000P 2022默认会将屏幕刷新率降低到60，同时平板的默认屏幕缩放是100，界面文字显示太小，通过以下的自动化设置可解决此问题
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/4161182/201809503-5f380df0-a347-44e3-bc05-f8358f709f4c.png">
+
+
+以下是原开源项目的介绍
+---
 
 #### Other language versions of this README file:
 * [简体中文版简介](README_zh-hans.md)
