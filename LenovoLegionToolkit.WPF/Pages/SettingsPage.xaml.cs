@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,13 +7,13 @@ using System.Windows.Controls;
 using Humanizer;
 using LenovoLegionToolkit.Lib;
 using LenovoLegionToolkit.Lib.Automation;
-using LenovoLegionToolkit.Lib.Automation.Pipeline;
 using LenovoLegionToolkit.Lib.Controllers;
 using LenovoLegionToolkit.Lib.Extensions;
 using LenovoLegionToolkit.Lib.Features;
 using LenovoLegionToolkit.Lib.Settings;
 using LenovoLegionToolkit.Lib.System;
 using LenovoLegionToolkit.Lib.Utils;
+using LenovoLegionToolkit.WPF.Extensions;
 using LenovoLegionToolkit.WPF.Resources;
 using LenovoLegionToolkit.WPF.Utils;
 using LenovoLegionToolkit.WPF.Windows.Settings;
@@ -41,6 +40,8 @@ namespace LenovoLegionToolkit.WPF.Pages
 
             Loaded += SettingsPage_Loaded;
             IsVisibleChanged += SettingsPage_IsVisibleChanged;
+
+            _themeManager.ThemeApplied += ThemeManager_ThemeApplied;
         }
 
         private async void SettingsPage_Loaded(object sender, RoutedEventArgs e) => await RefreshAsync();
@@ -49,6 +50,12 @@ namespace LenovoLegionToolkit.WPF.Pages
         {
             if (IsLoaded && IsVisible)
                 await RefreshAsync();
+        }
+
+        private void ThemeManager_ThemeApplied(object? sender, EventArgs e)
+        {
+            if (!_isRefreshing)
+                UpdateAccentColorPicker();
         }
 
         private async Task RefreshAsync()
@@ -70,7 +77,10 @@ namespace LenovoLegionToolkit.WPF.Pages
             }
 
             _themeComboBox.SetItems(Enum.GetValues<Theme>(), _settings.Store.Theme, t => t.GetDisplayName());
-            _accentColor.SetColor(_settings.Store.AccentColor ?? _themeManager.DefaultAccentColor);
+
+            UpdateAccentColorPicker();
+            _accentColorSourceComboBox.SetItems(Enum.GetValues<AccentColorSource>(), _settings.Store.AccentColorSource, t => t.GetDisplayName());
+
             _autorunComboBox.SetItems(Enum.GetValues<AutorunState>(), Autorun.State, t => t.GetDisplayName());
             _minimizeOnCloseToggle.IsChecked = _settings.Store.MinimizeOnClose;
 
@@ -86,15 +96,7 @@ namespace LenovoLegionToolkit.WPF.Pages
             _fnKeysCard.Visibility = fnKeysStatus != SoftwareStatus.NotFound ? Visibility.Visible : Visibility.Collapsed;
             _fnKeysToggle.IsChecked = fnKeysStatus == SoftwareStatus.Disabled;
 
-            var pipelines = new List<AutomationPipeline?> { null };
-            pipelines.AddRange((await _automationProcessor.GetPipelinesAsync()).Where(p => p.Trigger is null).OrderBy(p => p.Name));
-
-            var singlePressPipeline = pipelines.FirstOrDefault(p => p?.Id == _settings.Store.SmartKeySinglePressActionId);
-            _smartKeySinglePressActionComboBox.SetItems(pipelines, singlePressPipeline, ap => ap?.Name ?? Resource.SettingsPage_SmartKeySinglePressAction_ShowThisApp);
             _smartKeySinglePressActionCard.Visibility = fnKeysStatus != SoftwareStatus.Enabled ? Visibility.Visible : Visibility.Collapsed;
-
-            var doublePressPipeline = pipelines.FirstOrDefault(p => p?.Id == _settings.Store.SmartKeyDoublePressActionId);
-            _smartKeyDoublePressActionComboBox.SetItems(pipelines, doublePressPipeline, ap => ap?.Name ?? Resource.SettingsPage_SmartKeySinglePressAction_ShowThisApp);
             _smartKeyDoublePressActionCard.Visibility = fnKeysStatus != SoftwareStatus.Enabled ? Visibility.Visible : Visibility.Collapsed;
 
             _notificationsCard.Visibility = fnKeysStatus != SoftwareStatus.Enabled ? Visibility.Visible : Visibility.Collapsed;
@@ -110,8 +112,6 @@ namespace LenovoLegionToolkit.WPF.Pages
             _vantageToggle.Visibility = Visibility.Visible;
             _legionZoneToggle.Visibility = Visibility.Visible;
             _fnKeysToggle.Visibility = Visibility.Visible;
-            _smartKeySinglePressActionComboBox.Visibility = Visibility.Visible;
-            _smartKeyDoublePressActionComboBox.Visibility = Visibility.Visible;
 
             _isRefreshing = false;
         }
@@ -143,15 +143,40 @@ namespace LenovoLegionToolkit.WPF.Pages
             _themeManager.Apply();
         }
 
-        private void AccentColorControl_OnChanged(object sender, EventArgs e)
+        private void AccentColorPicker_Changed(object sender, EventArgs e)
         {
             if (_isRefreshing)
                 return;
 
-            _settings.Store.AccentColor = _accentColor.GetColor();
+            if (_settings.Store.AccentColorSource != AccentColorSource.Custom)
+                return;
+
+            _settings.Store.AccentColor = _accentColorPicker.SelectedColor.ToRGBColor();
             _settings.SynchronizeStore();
 
             _themeManager.Apply();
+        }
+
+        private void AccentColorSourceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isRefreshing)
+                return;
+
+            if (!_accentColorSourceComboBox.TryGetSelectedItem(out AccentColorSource state))
+                return;
+
+            _settings.Store.AccentColorSource = state;
+            _settings.SynchronizeStore();
+
+            UpdateAccentColorPicker();
+
+            _themeManager.Apply();
+        }
+
+        private void UpdateAccentColorPicker()
+        {
+            _accentColorPicker.Visibility = _settings.Store.AccentColorSource == AccentColorSource.Custom ? Visibility.Visible : Visibility.Collapsed;
+            _accentColorPicker.SelectedColor = _themeManager.AccentColor.ToColor();
         }
 
         private void AutorunComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -165,28 +190,32 @@ namespace LenovoLegionToolkit.WPF.Pages
             Autorun.Set(state);
         }
 
-        private void SmartKeySinglePressActionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SmartKeySinglePressActionCard_Click(object sender, RoutedEventArgs e)
         {
             if (_isRefreshing)
                 return;
 
-            if (!_smartKeySinglePressActionComboBox.TryGetSelectedItem(out AutomationPipeline? pipeline))
-                return;
-
-            _settings.Store.SmartKeySinglePressActionId = pipeline?.Id;
-            _settings.SynchronizeStore();
+            var window = new SelectSmartKeyPipelinesWindow
+            {
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ShowInTaskbar = false,
+            };
+            window.ShowDialog();
         }
 
-        private void SmartKeyDoublePressActionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SmartKeyDoublePressActionCard_Click(object sender, RoutedEventArgs e)
         {
             if (_isRefreshing)
                 return;
 
-            if (!_smartKeyDoublePressActionComboBox.TryGetSelectedItem(out AutomationPipeline? pipeline))
-                return;
-
-            _settings.Store.SmartKeyDoublePressActionId = pipeline?.Id;
-            _settings.SynchronizeStore();
+            var window = new SelectSmartKeyPipelinesWindow(isDoublePress: true)
+            {
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ShowInTaskbar = false,
+            };
+            window.ShowDialog();
         }
 
         private void MinimizeOnCloseToggle_Click(object sender, RoutedEventArgs e)

@@ -54,6 +54,22 @@ namespace LenovoLegionToolkit.Lib
         }
     }
 
+    public struct DisplayAdvancedColorInfo
+    {
+        public bool AdvancedColorSupported { get; }
+        public bool AdvancedColorEnabled { get; }
+        public bool WideColorEnforced { get; }
+        public bool AdvancedColorForceDisabled { get; }
+
+        public DisplayAdvancedColorInfo(bool advancedColorSupported, bool advancedColorEnabled, bool wideColorEnforced, bool advancedColorForceDisabled)
+        {
+            AdvancedColorSupported = advancedColorSupported;
+            AdvancedColorEnabled = advancedColorEnabled;
+            WideColorEnforced = wideColorEnforced;
+            AdvancedColorForceDisabled = advancedColorForceDisabled;
+        }
+    }
+
     public struct FanTableData
     {
         public byte FanId { get; init; }
@@ -389,23 +405,34 @@ namespace LenovoLegionToolkit.Lib
             G = g;
             B = b;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is RGBColor color && R == color.R && G == color.G && B == color.B;
+        }
+
+        public override int GetHashCode() => (R, G, B).GetHashCode();
+
+        public static bool operator ==(RGBColor left, RGBColor right) => left.Equals(right);
+
+        public static bool operator !=(RGBColor left, RGBColor right) => !left.Equals(right);
     }
 
-    public struct RGBKeyboardBacklightSettings
+    public struct RGBKeyboardBacklightBacklightPresetDescription
     {
-        public RGBKeyboardEffect Effect { get; } = RGBKeyboardEffect.Static;
-        public RBGKeyboardSpeed Speed { get; } = RBGKeyboardSpeed.Slowest;
-        public RGBKeyboardBrightness Brightness { get; } = RGBKeyboardBrightness.Low;
+        public RGBKeyboardBacklightEffect Effect { get; } = RGBKeyboardBacklightEffect.Static;
+        public RBGKeyboardBacklightSpeed Speed { get; } = RBGKeyboardBacklightSpeed.Slowest;
+        public RGBKeyboardBacklightBrightness Brightness { get; } = RGBKeyboardBacklightBrightness.Low;
         public RGBColor Zone1 { get; } = new();
         public RGBColor Zone2 { get; } = new();
         public RGBColor Zone3 { get; } = new();
         public RGBColor Zone4 { get; } = new();
 
         [JsonConstructor]
-        public RGBKeyboardBacklightSettings(
-            RGBKeyboardEffect effect,
-            RBGKeyboardSpeed speed,
-            RGBKeyboardBrightness brightness,
+        public RGBKeyboardBacklightBacklightPresetDescription(
+            RGBKeyboardBacklightEffect effect,
+            RBGKeyboardBacklightSpeed speed,
+            RGBKeyboardBacklightBrightness brightness,
             RGBColor zone1,
             RGBColor zone2,
             RGBColor zone3,
@@ -424,7 +451,7 @@ namespace LenovoLegionToolkit.Lib
 
         public override bool Equals(object? obj)
         {
-            return obj is RGBKeyboardBacklightSettings settings &&
+            return obj is RGBKeyboardBacklightBacklightPresetDescription settings &&
                    Effect == settings.Effect &&
                    Speed == settings.Speed &&
                    Brightness == settings.Brightness &&
@@ -436,12 +463,12 @@ namespace LenovoLegionToolkit.Lib
 
         public override int GetHashCode() => HashCode.Combine(Effect, Speed, Brightness, Zone1, Zone2, Zone3, Zone4);
 
-        public static bool operator ==(RGBKeyboardBacklightSettings left, RGBKeyboardBacklightSettings right)
+        public static bool operator ==(RGBKeyboardBacklightBacklightPresetDescription left, RGBKeyboardBacklightBacklightPresetDescription right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(RGBKeyboardBacklightSettings left, RGBKeyboardBacklightSettings right)
+        public static bool operator !=(RGBKeyboardBacklightBacklightPresetDescription left, RGBKeyboardBacklightBacklightPresetDescription right)
         {
             return !(left == right);
         }
@@ -453,10 +480,10 @@ namespace LenovoLegionToolkit.Lib
     public struct RGBKeyboardBacklightState
     {
         public RGBKeyboardBacklightPreset SelectedPreset { get; }
-        public Dictionary<RGBKeyboardBacklightPreset, RGBKeyboardBacklightSettings> Presets { get; }
+        public Dictionary<RGBKeyboardBacklightPreset, RGBKeyboardBacklightBacklightPresetDescription> Presets { get; }
 
         [JsonConstructor]
-        public RGBKeyboardBacklightState(RGBKeyboardBacklightPreset selectedPreset, Dictionary<RGBKeyboardBacklightPreset, RGBKeyboardBacklightSettings> presets)
+        public RGBKeyboardBacklightState(RGBKeyboardBacklightPreset selectedPreset, Dictionary<RGBKeyboardBacklightPreset, RGBKeyboardBacklightBacklightPresetDescription> presets)
         {
             SelectedPreset = selectedPreset;
             Presets = presets;
@@ -518,6 +545,46 @@ namespace LenovoLegionToolkit.Lib
         public static bool operator !=(RefreshRate left, RefreshRate right) => !(left == right);
 
         #endregion
+    }
+
+    public struct SpectrumKeyboardBacklightKeys
+    {
+        public bool All { get; }
+        public ushort[] KeyCodes { get; }
+
+        private SpectrumKeyboardBacklightKeys(bool all, ushort[] keyCodes)
+        {
+            All = all;
+            KeyCodes = keyCodes;
+        }
+
+        public static SpectrumKeyboardBacklightKeys AllKeys() => new(true, Array.Empty<ushort>());
+        public static SpectrumKeyboardBacklightKeys SomeKeys(ushort[] keyCodes) => new(false, keyCodes);
+    }
+
+    public struct SpectrumKeyboardBacklightEffect
+    {
+        public SpectrumKeyboardBacklightEffectType Type { get; }
+        public SpectrumKeyboardBacklightSpeed Speed { get; }
+        public SpectrumKeyboardBacklightDirection Direction { get; }
+        public SpectrumKeyboardBacklightClockwiseDirection ClockwiseDirection { get; }
+        public RGBColor[] Colors { get; }
+        public SpectrumKeyboardBacklightKeys Keys { get; }
+
+        public SpectrumKeyboardBacklightEffect(SpectrumKeyboardBacklightEffectType type,
+            SpectrumKeyboardBacklightSpeed speed,
+            SpectrumKeyboardBacklightDirection direction,
+            SpectrumKeyboardBacklightClockwiseDirection clockwiseDirection,
+            RGBColor[] colors,
+            SpectrumKeyboardBacklightKeys keys)
+        {
+            Type = type;
+            Speed = speed;
+            Direction = direction;
+            ClockwiseDirection = clockwiseDirection;
+            Colors = colors;
+            Keys = keys;
+        }
     }
 
     public struct StepperValue

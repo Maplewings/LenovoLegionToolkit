@@ -353,6 +353,15 @@ Este posibil ca acest timp să nu fie precis dacă laptopul a fost încărcat î
   <data name="ColorCardControl_Red" xml:space="preserve">
     <value>Roșu</value>
   </data>
+  <data name="Color_Blue" xml:space="preserve">
+    <value>Albastru</value>
+  </data>
+  <data name="Color_Green" xml:space="preserve">
+    <value>Verde</value>
+  </data>
+  <data name="Color_Red" xml:space="preserve">
+    <value>Roșu</value>
+  </data>
   <data name="ComboBoxHybridModeControl_Message" xml:space="preserve">
     <value>Selectați modul de operare GPU în funcție de utilizarea computerului și de condițiile de alimentare.
 Schimbarea modurilor poate necesita repornirea.</value>
@@ -505,6 +514,9 @@ ATENȚIE: Această acțiune nu va rula corect dacă afișajul intern este oprit.
   <data name="DisplayBrightnessAutomationStepControl_Title" xml:space="preserve">
     <value>Luminozitate afișaj</value>
   </data>
+  <data name="DonatePage_DonateWith" xml:space="preserve">
+    <value>Donați cu</value>
+  </data>
   <data name="DonatePage_Message" xml:space="preserve">
     <value>Dezvoltarea și întreținerea Lenovo Legion Toolkit necesită mult timp. Dacă vă place acest software, îi puteți sprijini viitorul donând o sumă la alegere.
 
@@ -514,6 +526,9 @@ Mulțumesc anticipat!</value>
   </data>
   <data name="DonatePage_Title" xml:space="preserve">
     <value>Donație</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editare</value>
   </data>
   <data name="ExcludeRefreshRatesWindow_NoRefreshRatesFound_Message" xml:space="preserve">
     <value>Asigurați-vă că afișajul laptopului este pornit. Lenovo Legion Toolkit nu poate încărca rate de reîmprospătare pentru un afișaj care nu este pornit.</value>
@@ -668,6 +683,23 @@ Serios, aveți grijă cu această opțiune!</value>
   <data name="GodModeSettingsWindow_Title" xml:space="preserve">
     <value>Setări mod Personalizat</value>
   </data>
+  <data name="HDRAutomationStepControl_Message" xml:space="preserve">
+    <value>Activați intervalul dinamic ridicat (HDR) pe afișajul încorporat.
+
+ATENȚIE: Această acțiune nu va rula corect dacă afișajul incorporat este oprit.</value>
+  </data>
+  <data name="HDRAutomationStepControl_Title" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="HDRControl_Message" xml:space="preserve">
+    <value>Activați intervalul dinamic ridicat (HDR) pe afișajul încorporat.</value>
+  </data>
+  <data name="HDRControl_Title" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="HDRControl_Warning" xml:space="preserve">
+    <value>Utilizarea HDR este blocată de setările Windows.</value>
+  </data>
   <data name="IncompatibleDevice_Message" xml:space="preserve">
     <value>Acest dispozitiv nu este compatibil cu Lenovo Legion Toolkit.</value>
   </data>
@@ -679,6 +711,12 @@ Serios, aveți grijă cu această opțiune!</value>
   </data>
   <data name="KeyboardBacklightPage_Title" xml:space="preserve">
     <value>Iluminare tastatură</value>
+  </data>
+  <data name="Keyboard_VantageEnabledWarning_Message" xml:space="preserve">
+    <value>Iluminarea tastaturii nu poate fi controlată aici, când Vantage și/sau serviciile sale rulează, din cauza conflictelor dintre cele două.</value>
+  </data>
+  <data name="Keyboard_VantageEnabledWarning_Title" xml:space="preserve">
+    <value>Lenovo Vantage pare să fie activat</value>
   </data>
   <data name="MainWindow_NavigationItem_About" xml:space="preserve">
     <value>Despre</value>
@@ -758,6 +796,15 @@ Serios, aveți grijă cu această opțiune!</value>
   <data name="Notification_NumLockOn" xml:space="preserve">
     <value>Num Lock activat</value>
   </data>
+  <data name="Notification_SpectrumKeyboardBacklight_Backlight" xml:space="preserve">
+		<value>Iluminare {0}</value>
+	</data>
+  <data name="Notification_SpectrumKeyboardBacklight_Brightness" xml:space="preserve">
+		<value>Luminozitate {0}</value>
+	</data>
+  <data name="Notification_SpectrumKeyboardBacklight_Profile" xml:space="preserve">
+		<value>Profil {0}</value>
+	</data>
   <data name="Notification_TouchpadOff" xml:space="preserve">
     <value>Touchpad oprit</value>
   </data>
@@ -797,6 +844,9 @@ Activați această opțiune dacă aveți conflicte cu aplicațiile pe ecran comp
   </data>
   <data name="NotificationsSettingsWindow_RefreshRate" xml:space="preserve">
     <value>Rată de reîmprospătare</value>
+  </data>
+  <data name="NotificationsSettingsWindow_SmartKey" xml:space="preserve">
+    <value>Tastă inteligentă</value>
   </data>
   <data name="NotificationsSettingsWindow_Title" xml:space="preserve">
     <value>Notificări</value>
@@ -932,6 +982,9 @@ Puteți schimba modul apăsând Fn+Q.</value>
   <data name="PowerModeControl_Title" xml:space="preserve">
     <value>Mod putere</value>
   </data>
+  <data name="PowerModeControl_Warning" xml:space="preserve">
+    <value>Este posibil ca modul de putere selectat să nu funcționeze corect fără alimentator.</value>
+  </data>
   <data name="PowerModeWindow_Title" xml:space="preserve">
     <value>Mod putere</value>
   </data>
@@ -962,6 +1015,9 @@ Puteți schimba modul apăsând Fn+Q.</value>
   <data name="RGBKeyboardBacklightAutomationStepControl_Title" xml:space="preserve">
     <value>Iluminare tastatură</value>
   </data>
+  <data name="RGBKeyboardBacklightBrightnessCardControl_Brightness" xml:space="preserve">
+    <value>Luminozitate</value>
+  </data>
   <data name="RGBKeyboardBacklightControl_Preset1" xml:space="preserve">
     <value>Profil 1</value>
   </data>
@@ -973,12 +1029,6 @@ Puteți schimba modul apăsând Fn+Q.</value>
   </data>
   <data name="RGBKeyboardBacklightControl_PresetOff" xml:space="preserve">
     <value>Oprit</value>
-  </data>
-  <data name="RGBKeyboardBacklightControl_VantageEnabled_Message" xml:space="preserve">
-    <value>Iluminarea tastaturii nu poate fi controlată aici, când Vantage și/sau serviciile sale rulează, din cauza conflictelor dintre cele două.</value>
-  </data>
-  <data name="RGBKeyboardBacklightControl_VantageEnabled_Title" xml:space="preserve">
-    <value>Lenovo Vantage pare să fie activat</value>
   </data>
   <data name="RGBKeyboardBacklightControl_Zone1" xml:space="preserve">
     <value>Zona 1</value>
@@ -992,13 +1042,10 @@ Puteți schimba modul apăsând Fn+Q.</value>
   <data name="RGBKeyboardBacklightControl_Zone4" xml:space="preserve">
     <value>Zona 4</value>
   </data>
-  <data name="RGBKeyboardBrightnessCardControl_Brightness" xml:space="preserve">
-    <value>Luminozitate</value>
-  </data>
-  <data name="RGBKeyboardEffectCardControl_Title" xml:space="preserve">
+  <data name="RGBKeyboardBacklightEffectCardControl_Title" xml:space="preserve">
     <value>Efect</value>
   </data>
-  <data name="RGBKeyboardSpeedCardControl_Title" xml:space="preserve">
+  <data name="RGBKeyboardBacklightSpeedCardControl_Title" xml:space="preserve">
     <value>Viteză</value>
   </data>
   <data name="ReadmeWindow_Title" xml:space="preserve">
@@ -1051,6 +1098,15 @@ Asigurați-vă mai întâi că scriptul rulează corect.</value>
   </data>
   <data name="Saving" xml:space="preserve">
     <value>Se salvează...</value>
+  </data>
+  <data name="SelectSmartKeyPipelinesWindow_List_Description" xml:space="preserve">
+    <value>Alegeți una sau mai multe acțiuni rapide de parcurs</value>
+  </data>
+  <data name="SelectSmartKeyPipelinesWindow_List_Empty" xml:space="preserve">
+    <value>Nicio Acțiune Rapidă definită.</value>
+  </data>
+  <data name="SelectSmartKeyPipelinesWindow_ShowThisApp" xml:space="preserve">
+    <value>Arată această aplicație</value>
   </data>
   <data name="SettingsPage_AccentColor_Description" xml:space="preserve">
     <value>Schimbați culoarea de accent a aplicației.</value>
@@ -1158,7 +1214,7 @@ Se recomandă repornirea după modificarea acestei opțiuni.</value>
   <data name="SettingsPage_PowerPlans_Title" xml:space="preserve">
     <value>Planuri de alimentare</value>
   </data>
-	<data name="SettingsPage_SmartKeyDoublePressAction_Message" xml:space="preserve">
+  <data name="SettingsPage_SmartKeyDoublePressAction_Message" xml:space="preserve">
     <value>Setați o acțiune rapidă la dubla apăsare a tastelor Fn+F9.</value>
   </data>
   <data name="SettingsPage_SmartKeyDoublePressAction_Title" xml:space="preserve">
@@ -1166,9 +1222,6 @@ Se recomandă repornirea după modificarea acestei opțiuni.</value>
   </data>
   <data name="SettingsPage_SmartKeySinglePressAction_Message" xml:space="preserve">
     <value>Setați o acțiune rapidă la apăsarea tastelor Fn+F9.</value>
-  </data>
-  <data name="SettingsPage_SmartKeySinglePressAction_ShowThisApp" xml:space="preserve">
-    <value>Arată această aplicație</value>
   </data>
   <data name="SettingsPage_SmartKeySinglePressAction_Title" xml:space="preserve">
     <value>Acțiune tastă inteligentă</value>
@@ -1181,6 +1234,90 @@ Se recomandă repornirea după modificarea acestei opțiuni.</value>
   </data>
   <data name="SettingsPage_Title" xml:space="preserve">
     <value>Setări</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightBrightnessAutomationStepControl_Message" xml:space="preserve">
+    <value>Reglați luminozitatea iluminării tastaturii.</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightBrightnessAutomationStepControl_Off" xml:space="preserve">
+    <value>Oprit</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightBrightnessAutomationStepControl_Title" xml:space="preserve">
+    <value>Luminozitate iluminare tastatură</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_AddEffect" xml:space="preserve">
+    <value>Adăugare efect</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_ApplyProfileError_Title" xml:space="preserve">
+    <value>Nu s-a putut aplica profilul</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_ApplyProfileError_Title_Message" xml:space="preserve">
+    <value>Profilul de iluminare nu s-a putut aplica.</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_AuroraSyncNotSupported_Message" xml:space="preserve">
+    <value>Efectul Aurora Sync nu este suportat momentan.</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_AuroraSyncNotSupported_Title" xml:space="preserve">
+    <value>Aurora Sync nu este suportat</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_Brightness_Title" xml:space="preserve">
+    <value>Luminozitate</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_DeselectAll_ToolTip" xml:space="preserve">
+    <value>Deselectați toate zonele</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_Effects" xml:space="preserve">
+    <value>Efecte</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_NoEffects_Text" xml:space="preserve">
+    <value>Niciun efect adăugat.</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_ResetToDefault_Tooltip" xml:space="preserve">
+		<value>Resetare la valorile implicite</value>
+	</data>
+  <data name="SpectrumKeyboardBacklightControl_SelectAll_ToolTip" xml:space="preserve">
+    <value>Selectați toate zonele</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_SwitchKeyboardLayout_ToolTip" xml:space="preserve">
+    <value>Comutați aranjamentul tastaturii</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_ClockwiseDirection_Title" xml:space="preserve">
+    <value>Direcţie</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_Color_Title" xml:space="preserve">
+    <value>Culoare</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_Colors_Title" xml:space="preserve">
+    <value>Culori</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_Direction_Title" xml:space="preserve">
+    <value>Direcţie</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_Effect_Title" xml:space="preserve">
+    <value>Efect</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_Effect_Warning" xml:space="preserve">
+    <value>Acest efect va fi aplicat întregii tastaturi și va înlocui toate celelalte efecte.</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_Speed_Title" xml:space="preserve">
+    <value>Viteză</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_Title_Add" xml:space="preserve">
+    <value>Adăugare efect</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightEditEffectWindow_Title_Edit" xml:space="preserve">
+    <value>Editare efect</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightProfileAutomationStepControl_Message" xml:space="preserve">
+    <value>Modificați profilul de iluminare al tastaturii.</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightProfileAutomationStepControl_Title" xml:space="preserve">
+    <value>Profil de iluminare al tastaturii</value>
+  </data>
+  <data name="SpectrumKeyboardEffectControl_Description_AllZones" xml:space="preserve">
+    <value>Toate tastele</value>
+  </data>
+  <data name="SpectrumKeyboardEffectControl_Description_Zones" xml:space="preserve">
+    <value>{0} zone</value>
   </data>
   <data name="TimeWindow_Sunrise" xml:space="preserve">
     <value>Răsărit</value>

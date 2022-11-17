@@ -867,6 +867,33 @@ namespace LenovoLegionToolkit.WPF.Resources {
         /// <summary>
         ///   查找类似 Blue 的本地化字符串。
         /// </summary>
+        public static string Color_Blue {
+            get {
+                return ResourceManager.GetString("Color_Blue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Green.
+        /// </summary>
+        public static string Color_Green {
+            get {
+                return ResourceManager.GetString("Color_Green", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Red.
+        /// </summary>
+        public static string Color_Red {
+            get {
+                return ResourceManager.GetString("Color_Red", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blue.
+        /// </summary>
         public static string ColorCardControl_Blue {
             get {
                 return ResourceManager.GetString("ColorCardControl_Blue", resourceCulture);
@@ -1408,7 +1435,16 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Make sure that laptop display is on. Lenovo Legion Toolkit can&apos;t load refresh rates for a display that is not on. 的本地化字符串。
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure that laptop display is on. Lenovo Legion Toolkit can&apos;t load refresh rates for a display that is not on..
         /// </summary>
         public static string ExcludeRefreshRatesWindow_NoRefreshRatesFound_Message {
             get {
@@ -1861,7 +1897,54 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 This device is not compatible with Lenovo Legion Toolkit. 的本地化字符串。
+        ///   Looks up a localized string similar to Enable high dynamic range (HDR) on the built-in display.
+        ///
+        ///WARNING: This action will not run correctly if the internal display is off..
+        /// </summary>
+        public static string HDRAutomationStepControl_Message {
+            get {
+                return ResourceManager.GetString("HDRAutomationStepControl_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HDR.
+        /// </summary>
+        public static string HDRAutomationStepControl_Title {
+            get {
+                return ResourceManager.GetString("HDRAutomationStepControl_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable high dynamic range (HDR) on the built-in display..
+        /// </summary>
+        public static string HDRControl_Message {
+            get {
+                return ResourceManager.GetString("HDRControl_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HDR.
+        /// </summary>
+        public static string HDRControl_Title {
+            get {
+                return ResourceManager.GetString("HDRControl_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HDR usage is blocked by Windows settings..
+        /// </summary>
+        public static string HDRControl_Warning {
+            get {
+                return ResourceManager.GetString("HDRControl_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This device is not compatible with Lenovo Legion Toolkit..
         /// </summary>
         public static string IncompatibleDevice_Message {
             get {
@@ -1879,7 +1962,25 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 No compatible keyboards found 的本地化字符串。
+        ///   Looks up a localized string similar to Keyboard backlight cannot be controlled in here when Vantage or it&apos;s services are running..
+        /// </summary>
+        public static string Keyboard_VantageEnabledWarning_Message {
+            get {
+                return ResourceManager.GetString("Keyboard_VantageEnabledWarning_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lenovo Vantage seems to be enabled.
+        /// </summary>
+        public static string Keyboard_VantageEnabledWarning_Title {
+            get {
+                return ResourceManager.GetString("Keyboard_VantageEnabledWarning_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No compatible keyboards found.
         /// </summary>
         public static string KeyboardBacklightPage_NoCompatibleKeyboardsFound {
             get {
@@ -2131,7 +2232,34 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Touchpad off 的本地化字符串。
+        ///   Looks up a localized string similar to Backlight {0}.
+        /// </summary>
+        public static string Notification_SpectrumKeyboardBacklight_Backlight {
+            get {
+                return ResourceManager.GetString("Notification_SpectrumKeyboardBacklight_Backlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brightness {0}.
+        /// </summary>
+        public static string Notification_SpectrumKeyboardBacklight_Brightness {
+            get {
+                return ResourceManager.GetString("Notification_SpectrumKeyboardBacklight_Brightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile {0}.
+        /// </summary>
+        public static string Notification_SpectrumKeyboardBacklight_Profile {
+            get {
+                return ResourceManager.GetString("Notification_SpectrumKeyboardBacklight_Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Touchpad off.
         /// </summary>
         public static string Notification_TouchpadOff {
             get {
@@ -2249,7 +2377,16 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Notifications 的本地化字符串。
+        ///   Looks up a localized string similar to Smart Key.
+        /// </summary>
+        public static string NotificationsSettingsWindow_SmartKey {
+            get {
+                return ResourceManager.GetString("NotificationsSettingsWindow_SmartKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
         /// </summary>
         public static string NotificationsSettingsWindow_Title {
             get {
@@ -2838,7 +2975,16 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Preset 1 的本地化字符串。
+        ///   Looks up a localized string similar to Brightness.
+        /// </summary>
+        public static string RGBKeyboardBacklightBrightnessCardControl_Brightness {
+            get {
+                return ResourceManager.GetString("RGBKeyboardBacklightBrightnessCardControl_Brightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preset 1.
         /// </summary>
         public static string RGBKeyboardBacklightControl_Preset1 {
             get {
@@ -2893,6 +3039,7 @@ namespace LenovoLegionToolkit.WPF.Resources {
         
         /// <summary>
         ///   查找类似 Zone 1 的本地化字符串。
+        ///   Looks up a localized string similar to Zone 1.
         /// </summary>
         public static string RGBKeyboardBacklightControl_Zone1 {
             get {
@@ -2937,20 +3084,20 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Effect 的本地化字符串。
+        ///   Looks up a localized string similar to Effect.
         /// </summary>
-        public static string RGBKeyboardEffectCardControl_Title {
+        public static string RGBKeyboardBacklightEffectCardControl_Title {
             get {
-                return ResourceManager.GetString("RGBKeyboardEffectCardControl_Title", resourceCulture);
+                return ResourceManager.GetString("RGBKeyboardBacklightEffectCardControl_Title", resourceCulture);
             }
         }
         
         /// <summary>
         ///   查找类似 Speed 的本地化字符串。
         /// </summary>
-        public static string RGBKeyboardSpeedCardControl_Title {
+        public static string RGBKeyboardBacklightSpeedCardControl_Title {
             get {
-                return ResourceManager.GetString("RGBKeyboardSpeedCardControl_Title", resourceCulture);
+                return ResourceManager.GetString("RGBKeyboardBacklightSpeedCardControl_Title", resourceCulture);
             }
         }
         
@@ -3029,6 +3176,34 @@ namespace LenovoLegionToolkit.WPF.Resources {
         
         /// <summary>
         ///   查找类似 Change the accent color of the app. 的本地化字符串。
+        ///   Looks up a localized string similar to Choose one or more quick actions to cycle through.
+        /// </summary>
+        public static string SelectSmartKeyPipelinesWindow_List_Description {
+            get {
+                return ResourceManager.GetString("SelectSmartKeyPipelinesWindow_List_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Quick Actions defined..
+        /// </summary>
+        public static string SelectSmartKeyPipelinesWindow_List_Empty {
+            get {
+                return ResourceManager.GetString("SelectSmartKeyPipelinesWindow_List_Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show this app.
+        /// </summary>
+        public static string SelectSmartKeyPipelinesWindow_ShowThisApp {
+            get {
+                return ResourceManager.GetString("SelectSmartKeyPipelinesWindow_ShowThisApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change the accent color of the app..
         /// </summary>
         public static string SettingsPage_AccentColor_Description {
             get {
@@ -3146,9 +3321,9 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Disable Lenovo Hotkeys and it&apos;s service without uninstalling it.
-        ///If disabled, this app will handle Fn shortcuts
-        ///Restart is recommended after changing this option. 的本地化字符串。
+        ///   Looks up a localized string similar to Disable Lenovo Hotkeys and it&apos;s service without uninstalling it.
+        ///If disabled, this app will handle Fn shortcuts.
+        ///Restart is recommended after changing this option..
         /// </summary>
         public static string SettingsPage_DisableLenovoHotkeys_Message {
             get {
@@ -3410,7 +3585,259 @@ namespace LenovoLegionToolkit.WPF.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Sunrise 的本地化字符串。
+        ///   Looks up a localized string similar to Adjust keyboard backlight brightness..
+        /// </summary>
+        public static string SpectrumKeyboardBacklightBrightnessAutomationStepControl_Message {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightBrightnessAutomationStepControl_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightBrightnessAutomationStepControl_Off {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightBrightnessAutomationStepControl_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard backlight brightness.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightBrightnessAutomationStepControl_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightBrightnessAutomationStepControl_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add effect.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_AddEffect {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_AddEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t apply profile.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_ApplyProfileError_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_ApplyProfileError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lighting profile couldn&apos;t be applied..
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_ApplyProfileError_Title_Message {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_ApplyProfileError_Title_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aurora Sync effect is not currently supported..
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_AuroraSyncNotSupported_Message {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_AuroraSyncNotSupported_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aurora Sync is not supported.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_AuroraSyncNotSupported_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_AuroraSyncNotSupported_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brightness.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_Brightness_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_Brightness_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deselect all zones.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_DeselectAll_ToolTip {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_DeselectAll_ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Effects.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_Effects {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_Effects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No effects added..
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_NoEffects_Text {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_NoEffects_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset to default.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_ResetToDefault_Tooltip {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_ResetToDefault_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select all zones.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_SelectAll_ToolTip {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_SelectAll_ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch keyboard layout.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightControl_SwitchKeyboardLayout_ToolTip {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightControl_SwitchKeyboardLayout_ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Direction.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_ClockwiseDirection_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_ClockwiseDirection_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_Color_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_Color_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Colors.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_Colors_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_Colors_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Direction.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_Direction_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_Direction_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Effect.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_Effect_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_Effect_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This effect will be applied to the whole keyboard and will replace all other effects..
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_Effect_Warning {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_Effect_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_Speed_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_Speed_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add effect.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_Title_Add {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_Title_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit effect.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightEditEffectWindow_Title_Edit {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightEditEffectWindow_Title_Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust keyboard backlight profile..
+        /// </summary>
+        public static string SpectrumKeyboardBacklightProfileAutomationStepControl_Message {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightProfileAutomationStepControl_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard backlight profile.
+        /// </summary>
+        public static string SpectrumKeyboardBacklightProfileAutomationStepControl_Title {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardBacklightProfileAutomationStepControl_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All keys.
+        /// </summary>
+        public static string SpectrumKeyboardEffectControl_Description_AllZones {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardEffectControl_Description_AllZones", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} zones.
+        /// </summary>
+        public static string SpectrumKeyboardEffectControl_Description_Zones {
+            get {
+                return ResourceManager.GetString("SpectrumKeyboardEffectControl_Description_Zones", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sunrise.
         /// </summary>
         public static string TimeWindow_Sunrise {
             get {

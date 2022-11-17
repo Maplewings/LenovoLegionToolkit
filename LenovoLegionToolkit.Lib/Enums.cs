@@ -70,6 +70,12 @@ namespace LenovoLegionToolkit.Lib
         Off
     }
 
+    public enum HDRState
+    {
+        Off,
+        On
+    }
+
     public enum HybridModeState
     {
         [Display(ResourceType = typeof(Resource), Name = "HybridModeState_On")]
@@ -87,6 +93,12 @@ namespace LenovoLegionToolkit.Lib
         Default,
         IGPUOnly,
         Auto
+    }
+
+    public enum KeyboardLayout
+    {
+        Ansi,
+        Iso
     }
 
     public enum KnownFolder
@@ -131,12 +143,20 @@ namespace LenovoLegionToolkit.Lib
         PowerModePerformance,
         PowerModeGodMode,
         RefreshRate,
+        RGBKeyboardBacklightChanged,
+        RGBKeyboardBacklightOff,
         RGBKeyboardPreset,
         RGBKeyboardPresetOff,
         ScreenDPISet,
+        SmartKeyDoublePress,
+        SmartKeySinglePress,
+        SpectrumBacklightChanged,
+        SpectrumBacklightOff,
+        SpectrumBacklightPresetChanged,
         TouchpadOn,
         TouchpadOff,
-        WhiteKeyboardBacklight
+        WhiteKeyboardBacklightChanged,
+        WhiteKeyboardBacklightOff
     }
 
     public enum OS
@@ -184,25 +204,25 @@ namespace LenovoLegionToolkit.Lib
 
     public enum RGBKeyboardBacklightChanged { }
 
-    public enum RGBKeyboardBrightness
+    public enum RGBKeyboardBacklightBrightness
     {
-        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBrightness_Low")]
+        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBacklightBrightness_Low")]
         Low,
-        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBrightness_High")]
+        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBacklightBrightness_High")]
         High
     }
 
-    public enum RGBKeyboardEffect
+    public enum RGBKeyboardBacklightEffect
     {
-        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardEffect_Static")]
+        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBacklightEffect_Static")]
         Static,
-        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardEffect_Breath")]
+        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBacklightEffect_Breath")]
         Breath,
-        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardEffect_Smooth")]
+        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBacklightEffect_Smooth")]
         Smooth,
-        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardEffect_WaveRTL")]
+        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBacklightEffect_WaveRTL")]
         WaveRTL,
-        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardEffect_WaveLTR")]
+        [Display(ResourceType = typeof(Resource), Name = "RGBKeyboardBacklightEffect_WaveLTR")]
         WaveLTR
     }
 
@@ -218,15 +238,15 @@ namespace LenovoLegionToolkit.Lib
         Three = 2
     }
 
-    public enum RBGKeyboardSpeed
+    public enum RBGKeyboardBacklightSpeed
     {
-        [Display(ResourceType = typeof(Resource), Name = "RBGKeyboardSpeed_Slowest")]
+        [Display(ResourceType = typeof(Resource), Name = "RBGKeyboardBacklightSpeed_Slowest")]
         Slowest,
-        [Display(ResourceType = typeof(Resource), Name = "RBGKeyboardSpeed_Slow")]
+        [Display(ResourceType = typeof(Resource), Name = "RBGKeyboardBacklightSpeed_Slow")]
         Slow,
-        [Display(ResourceType = typeof(Resource), Name = "RBGKeyboardSpeed_Fast")]
+        [Display(ResourceType = typeof(Resource), Name = "RBGKeyboardBacklightSpeed_Fast")]
         Fast,
-        [Display(ResourceType = typeof(Resource), Name = "RBGKeyboardSpeed_Fastest")]
+        [Display(ResourceType = typeof(Resource), Name = "RBGKeyboardBacklightSpeed_Fastest")]
         Fastest
     }
 
@@ -246,7 +266,92 @@ namespace LenovoLegionToolkit.Lib
         CameraOn = 12,
         CameraOff = 13,
         Fn_R = 16,
-        Fn_R_2 = 0x0041002A
+        Fn_R_2 = 0x0041002A,
+        SpectrumBacklightOff = 24,
+        SpectrumBacklight1 = 25,
+        SpectrumBacklight2 = 26,
+        SpectrumBacklight3 = 38,
+        SpectrumPreset1 = 32,
+        SpectrumPreset2 = 33,
+        SpectrumPreset3 = 34,
+        SpectrumPreset4 = 35,
+        SpectrumPreset5 = 36,
+        SpectrumPreset6 = 37
+    }
+
+    public enum SpectrumKeyboardBacklightBrightness
+    {
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightBrightness_Off")]
+        Off,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightBrightness_Low")]
+        Low,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightBrightness_Medium")]
+        Medium,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightBrightness_High")]
+        High
+    }
+
+    public enum SpectrumKeyboardBacklightClockwiseDirection
+    {
+        None,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightDirection_Clockwise")]
+        Clockwise,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightDirection_CounterClockwise")]
+        CounterClockwise
+    }
+
+    public enum SpectrumKeyboardBacklightDirection
+    {
+        None,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightDirection_BottomToTop")]
+        BottomToTop,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightDirection_TopToBottom")]
+        TopToBottom,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightDirection_LeftToRight")]
+        LeftToRight,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightDirection_RightToLeft")]
+        RightToLeft
+    }
+
+    public enum SpectrumKeyboardBacklightEffectType
+    {
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_Always")]
+        Always,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_RainbowScrew")]
+        RainbowScrew,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_RainbowWave")]
+        RainbowWave,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_ColorChange")]
+        ColorChange,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_ColorWave")]
+        ColorWave,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_ColorPulse")]
+        ColorPulse,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_Smooth")]
+        Smooth,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_Rain")]
+        Rain,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_Ripple")]
+        Ripple,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_Type")]
+        Type,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_AudioBounce")]
+        AudioBounce,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_AudioRipple")]
+        AudioRipple,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightEffectType_AuroraSync")]
+        AuroraSync
+    }
+
+    public enum SpectrumKeyboardBacklightSpeed
+    {
+        None,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightSpeed_Speed1")]
+        Speed1,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightSpeed_Speed2")]
+        Speed2,
+        [Display(ResourceType = typeof(Resource), Name = "SpectrumKeyboardBacklightSpeed_Speed3")]
+        Speed3
     }
 
     public enum Theme
@@ -257,6 +362,14 @@ namespace LenovoLegionToolkit.Lib
         Light,
         [Display(ResourceType = typeof(Resource), Name = "Theme_Dark")]
         Dark
+    }
+
+    public enum AccentColorSource
+    {
+        [Display(ResourceType = typeof(Resource), Name = "AccentColorSource_System")]
+        System,
+        [Display(ResourceType = typeof(Resource), Name = "AccentColorSource_Custom")]
+        Custom
     }
 
     public enum TemperatureUnit
