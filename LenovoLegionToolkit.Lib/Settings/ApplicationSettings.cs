@@ -18,12 +18,14 @@ namespace LenovoLegionToolkit.Lib.Settings
             public bool PowerMode { get; set; }
             public bool RefreshRate { get; set; } = true;
             public bool ACAdapter { get; set; }
+            public bool SmartKey { get; set; }
         }
 
         public class ApplicationSettingsStore
         {
-            public Theme Theme { get; set; } = Theme.Dark;
+            public Theme Theme { get; set; }
             public RGBColor? AccentColor { get; set; }
+            public AccentColorSource AccentColorSource { get; set; }
             public Dictionary<PowerModeState, string> PowerPlans { get; set; } = new();
             public bool MinimizeOnClose { get; set; }
             public bool ActivatePowerProfilesWithVantageEnabled { get; set; }
@@ -34,6 +36,8 @@ namespace LenovoLegionToolkit.Lib.Settings
             public WarrantyInfo? WarrantyInfo { get; set; }
             public Guid? SmartKeySinglePressActionId { get; set; }
             public Guid? SmartKeyDoublePressActionId { get; set; }
+            public List<Guid> SmartKeySinglePressActionList { get; set; } = new();
+            public List<Guid> SmartKeyDoublePressActionList { get; set; } = new();
         }
 
         protected override string FileName => "settings.json";

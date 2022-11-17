@@ -20,6 +20,7 @@ namespace LenovoLegionToolkit.Lib
 
             builder.Register<ApplicationSettings>();
             builder.Register<RGBKeyboardSettings>();
+            builder.Register<SpectrumKeyboardSettings>();
             builder.Register<BalanceModeSettings>();
             builder.Register<GodModeSettings>();
             builder.Register<PackageDownloaderSettings>();
@@ -35,6 +36,7 @@ namespace LenovoLegionToolkit.Lib
             builder.Register<OverDriveFeature>();
             builder.Register<PowerModeFeature>();
             builder.Register<RefreshRateFeature>();
+            builder.Register<HDRFeature>();
             builder.Register<TouchpadLockFeature>();
             builder.Register<WhiteKeyboardBacklightFeature>();
             builder.Register<WinKeyFeature>();
@@ -69,9 +71,13 @@ namespace LenovoLegionToolkit.Lib
             builder.Register<WinKeyListener>()
                 .OnActivating(e => e.Instance.StartAsync().AsValueTask())
                 .AutoActivate();
+            builder.Register<SystemThemeListener>()
+                .OnActivating(e => e.Instance.StartAsync().AsValueTask())
+                .AutoActivate();
 
             builder.Register<GPUController>();
             builder.Register<CPUBoostModeController>();
+            builder.Register<SpectrumKeyboardBacklightController>();
             builder.Register<RGBKeyboardBacklightController>();
             builder.Register<GodModeController>();
             builder.Register<DisplayBrightnessController>();

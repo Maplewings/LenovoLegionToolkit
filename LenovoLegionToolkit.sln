@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LenovoLegionToolkit.Lib.Aut
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCDWrapper", "CCDWrapper\CCDWrapper.csproj", "{0E960D62-189F-4682-9D10-6A125080D560}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LenovoLegionToolkit.SpectrumTester", "LenovoLegionToolkit.SpectrumTester\LenovoLegionToolkit.SpectrumTester.csproj", "{BB54FD85-CB1C-401F-A520-02396718595C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{CC081CCC-BA76-4603-8444-9F33C3DD2025}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +37,16 @@ Global
 		{0E960D62-189F-4682-9D10-6A125080D560}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E960D62-189F-4682-9D10-6A125080D560}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E960D62-189F-4682-9D10-6A125080D560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB54FD85-CB1C-401F-A520-02396718595C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB54FD85-CB1C-401F-A520-02396718595C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB54FD85-CB1C-401F-A520-02396718595C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB54FD85-CB1C-401F-A520-02396718595C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BB54FD85-CB1C-401F-A520-02396718595C} = {CC081CCC-BA76-4603-8444-9F33C3DD2025}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA77E337-1B57-4D70-B454-BE5EA6E618D6}

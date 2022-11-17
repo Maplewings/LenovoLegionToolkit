@@ -55,12 +55,20 @@ namespace LenovoLegionToolkit.WPF.Utils
                 NotificationType.PowerModePerformance => _settings.Store.Notifications.PowerMode,
                 NotificationType.PowerModeGodMode => _settings.Store.Notifications.PowerMode,
                 NotificationType.RefreshRate => _settings.Store.Notifications.RefreshRate,
+                NotificationType.RGBKeyboardBacklightOff => _settings.Store.Notifications.KeyboardBacklight,
+                NotificationType.RGBKeyboardBacklightChanged => _settings.Store.Notifications.KeyboardBacklight,
                 NotificationType.RGBKeyboardPreset => _settings.Store.Notifications.KeyboardBacklight,
                 NotificationType.RGBKeyboardPresetOff => _settings.Store.Notifications.KeyboardBacklight,
                 NotificationType.ScreenDPISet => _settings.Store.Notifications.SetScreenDPI,
+                NotificationType.SmartKeyDoublePress => _settings.Store.Notifications.SmartKey,
+                NotificationType.SmartKeySinglePress => _settings.Store.Notifications.SmartKey,
+                NotificationType.SpectrumBacklightChanged => _settings.Store.Notifications.KeyboardBacklight,
+                NotificationType.SpectrumBacklightOff => _settings.Store.Notifications.KeyboardBacklight,
+                NotificationType.SpectrumBacklightPresetChanged => _settings.Store.Notifications.KeyboardBacklight,
                 NotificationType.TouchpadOn => _settings.Store.Notifications.TouchpadLock,
                 NotificationType.TouchpadOff => _settings.Store.Notifications.TouchpadLock,
-                NotificationType.WhiteKeyboardBacklight => _settings.Store.Notifications.KeyboardBacklight,
+                NotificationType.WhiteKeyboardBacklightOff => _settings.Store.Notifications.KeyboardBacklight,
+                NotificationType.WhiteKeyboardBacklightChanged => _settings.Store.Notifications.KeyboardBacklight,
                 _ => throw new ArgumentException(nameof(notification.Type))
             };
 
@@ -87,12 +95,20 @@ namespace LenovoLegionToolkit.WPF.Utils
                 NotificationType.PowerModePerformance => SymbolRegular.Gauge24,
                 NotificationType.PowerModeGodMode => SymbolRegular.Gauge24,
                 NotificationType.RefreshRate => SymbolRegular.Desktop24,
+                NotificationType.RGBKeyboardBacklightOff => SymbolRegular.Lightbulb24,
+                NotificationType.RGBKeyboardBacklightChanged => SymbolRegular.Lightbulb24,
                 NotificationType.RGBKeyboardPreset => SymbolRegular.Lightbulb24,
                 NotificationType.RGBKeyboardPresetOff => SymbolRegular.Lightbulb24,
                 NotificationType.ScreenDPISet => SymbolRegular.DualScreenSettings24,
+                NotificationType.SmartKeyDoublePress => SymbolRegular.StarEmphasis24,
+                NotificationType.SmartKeySinglePress => SymbolRegular.Star24,
+                NotificationType.SpectrumBacklightChanged => SymbolRegular.Lightbulb24,
+                NotificationType.SpectrumBacklightOff => SymbolRegular.Lightbulb24,
+                NotificationType.SpectrumBacklightPresetChanged => SymbolRegular.Lightbulb24,
                 NotificationType.TouchpadOn => SymbolRegular.Tablet24,
                 NotificationType.TouchpadOff => SymbolRegular.Tablet24,
-                NotificationType.WhiteKeyboardBacklight => SymbolRegular.Lightbulb24,
+                NotificationType.WhiteKeyboardBacklightOff => SymbolRegular.Lightbulb24,
+                NotificationType.WhiteKeyboardBacklightChanged => SymbolRegular.Lightbulb24,
                 _ => throw new ArgumentException(nameof(notification.Type))
             };
 
@@ -104,8 +120,10 @@ namespace LenovoLegionToolkit.WPF.Utils
                 NotificationType.FnLockOff => SymbolRegular.Line24,
                 NotificationType.MicrophoneOff => SymbolRegular.Line24,
                 NotificationType.NumLockOff => SymbolRegular.Line24,
-                NotificationType.RGBKeyboardPresetOff => SymbolRegular.Line24,
+                NotificationType.RGBKeyboardBacklightOff => SymbolRegular.Line24,
+                NotificationType.SpectrumBacklightOff => SymbolRegular.Line24,
                 NotificationType.TouchpadOff => SymbolRegular.Line24,
+                NotificationType.WhiteKeyboardBacklightOff => SymbolRegular.Line24,
                 _ => null,
             };
 
@@ -129,12 +147,20 @@ namespace LenovoLegionToolkit.WPF.Utils
                 NotificationType.PowerModePerformance => string.Format("{0}", notification.Args),
                 NotificationType.PowerModeGodMode => string.Format("{0}", notification.Args),
                 NotificationType.RefreshRate => string.Format("{0}", notification.Args),
+                NotificationType.RGBKeyboardBacklightOff => string.Format("{0}", notification.Args),
+                NotificationType.RGBKeyboardBacklightChanged => string.Format("{0}", notification.Args),
                 NotificationType.RGBKeyboardPreset => string.Format("{0}", notification.Args),
                 NotificationType.RGBKeyboardPresetOff => string.Format("{0}", notification.Args),
                 NotificationType.ScreenDPISet => string.Format("SET DPI : {0}", notification.Args),
+                NotificationType.SmartKeyDoublePress => string.Format("{0}", notification.Args),
+                NotificationType.SmartKeySinglePress => string.Format("{0}", notification.Args),
+                NotificationType.SpectrumBacklightChanged => string.Format(Resource.Notification_SpectrumKeyboardBacklight_Brightness, notification.Args),
+                NotificationType.SpectrumBacklightOff => string.Format(Resource.Notification_SpectrumKeyboardBacklight_Backlight, notification.Args),
+                NotificationType.SpectrumBacklightPresetChanged => string.Format(Resource.Notification_SpectrumKeyboardBacklight_Profile, notification.Args),
                 NotificationType.TouchpadOn => Resource.Notification_TouchpadOn,
                 NotificationType.TouchpadOff => Resource.Notification_TouchpadOff,
-                NotificationType.WhiteKeyboardBacklight => string.Format(Resource.Notification_WhiteKeyboardBacklight, notification.Args),
+                NotificationType.WhiteKeyboardBacklightOff => string.Format(Resource.Notification_WhiteKeyboardBacklight, notification.Args),
+                NotificationType.WhiteKeyboardBacklightChanged => string.Format(Resource.Notification_WhiteKeyboardBacklight, notification.Args),
                 _ => throw new ArgumentException(nameof(notification.Type))
             };
 
