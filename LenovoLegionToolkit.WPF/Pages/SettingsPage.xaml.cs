@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Humanizer;
 using LenovoLegionToolkit.Lib;
-using LenovoLegionToolkit.Lib.Automation;
 using LenovoLegionToolkit.Lib.Controllers;
 using LenovoLegionToolkit.Lib.Extensions;
 using LenovoLegionToolkit.Lib.Features;
@@ -29,7 +28,6 @@ namespace LenovoLegionToolkit.WPF.Pages
         private readonly FnKeys _fnKeys = IoCContainer.Resolve<FnKeys>();
         private readonly PowerModeFeature _powerModeFeature = IoCContainer.Resolve<PowerModeFeature>();
         private readonly RGBKeyboardBacklightController _rgbKeyboardBacklightController = IoCContainer.Resolve<RGBKeyboardBacklightController>();
-        private readonly AutomationProcessor _automationProcessor = IoCContainer.Resolve<AutomationProcessor>();
         private readonly ThemeManager _themeManager = IoCContainer.Resolve<ThemeManager>();
 
         private bool _isRefreshing;
@@ -256,7 +254,7 @@ namespace LenovoLegionToolkit.WPF.Pages
 
                 try
                 {
-                    if (_rgbKeyboardBacklightController.IsSupported())
+                    if (await _rgbKeyboardBacklightController.IsSupportedAsync())
                     {
                         if (Log.Instance.IsTraceEnabled)
                             Log.Instance.Trace($"Setting light control owner and restoring preset...");
@@ -273,7 +271,7 @@ namespace LenovoLegionToolkit.WPF.Pages
                 try
                 {
                     var controller = IoCContainer.Resolve<SpectrumKeyboardBacklightController>();
-                    if (controller.IsSupported())
+                    if (await controller.IsSupportedAsync())
                     {
                         if (Log.Instance.IsTraceEnabled)
                             Log.Instance.Trace($"Starting Aurora if needed...");
@@ -301,7 +299,7 @@ namespace LenovoLegionToolkit.WPF.Pages
             {
                 try
                 {
-                    if (_rgbKeyboardBacklightController.IsSupported())
+                    if (await _rgbKeyboardBacklightController.IsSupportedAsync())
                     {
                         if (Log.Instance.IsTraceEnabled)
                             Log.Instance.Trace($"Setting light control owner...");
@@ -322,7 +320,7 @@ namespace LenovoLegionToolkit.WPF.Pages
                         if (Log.Instance.IsTraceEnabled)
                             Log.Instance.Trace($"Making sure Aurora is stopped...");
 
-                        if (spectrumKeyboardBacklightController.IsSupported())
+                        if (await spectrumKeyboardBacklightController.IsSupportedAsync())
                             await spectrumKeyboardBacklightController.StopAuroraIfNeededAsync();
                     }
                 }
