@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using Windows.Win32.Devices.Display;
 
 namespace LenovoLegionToolkit.Lib
 {
@@ -17,6 +18,26 @@ namespace LenovoLegionToolkit.Lib
         public ushort FirstUseDate;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
         public byte[] Bytes2;
+    }
+
+    #endregion
+
+    #region Screen
+
+    //[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct DisplayConfigSourceDPIScaleGet
+    {
+        public DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+        public int minScaleRel;
+        public int curScaleRel;
+        public int maxScaleRel;
+    }
+
+    //[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct DisplayConfigSourceDPIScaleSet
+    {
+        public DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+        public int scaleRel;
     }
 
     #endregion
@@ -85,7 +106,7 @@ namespace LenovoLegionToolkit.Lib
 
     internal enum LENOVO_SPECTRUM_COLOR_MODE : byte
     {
-        None = 0,
+        None = 0, 
         RandomColor = 1,
         ColorList = 2
     }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CCD.Enum;
-using CCD;
+using LenovoLegionToolkit.Lib.Extensions;
 using LenovoLegionToolkit.Lib.Utils;
 using Newtonsoft.Json;
+using WindowsDisplayAPI;
 
 namespace LenovoLegionToolkit.Lib.Automation.Steps
 {
@@ -26,35 +26,32 @@ namespace LenovoLegionToolkit.Lib.Automation.Steps
 
         public IAutomationStep DeepCopy() => new ScreenDPIAutomationStep(State);
 
-        public Task RunAsync() => ResetHWMonitorDPI();
+        public Task RunAsync() => ResetHWMonitorDPIV2();
 
 
-        private async Task ResetHWMonitorDPI()
+        private async Task ResetHWMonitorDPIV2()
         {
-            DisplayConfigTopologyId topologyId;
-            var list = CCDHelpers.GetPathWraps(QueryDisplayFlags.OnlyActivePaths, out topologyId);
+            var list = Display.GetDisplays();
             foreach (var item in list)
             {
-                var sourceModeInfo = item.Path.sourceInfo;
-                var targetModeInfo = item.Path.targetInfo;
-                var name = CCDHelpers.GetTargetDeviceName(targetModeInfo);
+                var name = item.GetTargetDeviceName();
 
                 if (!name.StartsWith("HW", StringComparison.CurrentCultureIgnoreCase))
                 {
                     continue;
                 }
-
-                var dpiInfo = CCDHelpers.GetDPIScalingInfo(sourceModeInfo.adapterId, sourceModeInfo.id);
+                var dpiInfo = item.GetDisplaScaleInfo();
 
                 if (Log.Instance.IsTraceEnabled)
                     Log.Instance.Trace($"hw screen name: {name}, current dpi: {dpiInfo.current}");
 
                 if (dpiInfo.current != State.DPI)
                 {
-                    var result = CCDHelpers.SetDPIScaling(sourceModeInfo.adapterId, sourceModeInfo.id, (uint)State.DPI);
+                    var result = item.SetDisplaScaleInfo((uint)State.DPI);
                     Log.Instance.Trace($"set screen dpi: {State.DisplayName}");
                     MessagingCenter.Publish(new Notification(NotificationType.ScreenDPISet, NotificationDuration.Long, name));
                 }
+
             }
         }
 

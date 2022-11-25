@@ -70,6 +70,22 @@ namespace LenovoLegionToolkit.Lib
         }
     }
 
+    public struct DisplaScaleInfo
+    {
+        public uint mininum { get; set; }
+        public uint maximum { get; set; }
+        public uint current { get; set; }
+        public uint recommended { get; set; }
+
+        public DisplaScaleInfo(uint mininum, uint maximum, uint current, uint recommended)
+        {
+            this.mininum = mininum;
+            this.maximum = maximum;
+            this.current = current;
+            this.recommended = recommended;
+        }
+    }
+
     public struct FanTableData
     {
         public byte FanId { get; init; }
