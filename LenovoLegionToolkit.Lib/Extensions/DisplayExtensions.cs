@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using LenovoLegionToolkit.Lib.System;
@@ -11,6 +12,8 @@ namespace LenovoLegionToolkit.Lib.Extensions
 {
     public static class DisplayExtensions
     {
+        static uint[] DpiVals = { 100, 125, 150, 175, 200, 225, 250, 300, 350, 400, 450, 500 };
+
         public static async Task<Display?> GetBuiltInDisplayAsync()
         {
             var displays = Display.GetDisplays();
@@ -61,6 +64,113 @@ namespace LenovoLegionToolkit.Lib.Extensions
             if (PInvoke.DisplayConfigSetDeviceInfo(setAdvancedColorState.header) != 0)
                 PInvokeExtensions.ThrowIfWin32Error("SetAdvancedColorState");
         }
+
+        public static string GetTargetDeviceName(this Display display) 
+        {
+            return display.DevicePath
+                .Split("#")
+                .Skip(1)
+                .Take(2)
+                .Aggregate((s1, s2) => s1 + "\\" + s2);
+
+            var deviceName = new DISPLAYCONFIG_TARGET_DEVICE_NAME();
+            deviceName.header.type = (DISPLAYCONFIG_DEVICE_INFO_TYPE)(-3);
+            deviceName.header.size = (uint)Marshal.SizeOf(typeof(DISPLAYCONFIG_TARGET_DEVICE_NAME));
+            deviceName.header.adapterId.HighPart = display.Adapter.ToPathDisplayAdapter().AdapterId.HighPart;
+            deviceName.header.adapterId.LowPart = display.Adapter.ToPathDisplayAdapter().AdapterId.LowPart;
+            deviceName.header.id = display.ToPathDisplayTarget().TargetId;
+
+            if (PInvoke.DisplayConfigGetDeviceInfo(ref deviceName.header) != 0)
+                PInvokeExtensions.ThrowIfWin32Error("GetTargetDeviceName");
+            return "";
+        }
+
+        public static unsafe DisplaScaleInfo GetDisplaScaleInfo(this Display display) 
+        {
+            var dpiInfo = new DisplaScaleInfo();
+
+            var requestPacket = new DisplayConfigSourceDPIScaleGet();
+            requestPacket.header.type = (DISPLAYCONFIG_DEVICE_INFO_TYPE)(-4);
+            requestPacket.header.size = (uint)Marshal.SizeOf(typeof(DisplayConfigSourceDPIScaleGet));
+            requestPacket.header.adapterId.HighPart = display.Adapter.ToPathDisplayAdapter().AdapterId.HighPart;
+            requestPacket.header.adapterId.LowPart = display.Adapter.ToPathDisplayAdapter().AdapterId.LowPart;
+            requestPacket.header.id = display.ToPathDisplayTarget().TargetId;
+
+            DISPLAYCONFIG_DEVICE_INFO_HEADER* requestPacketLocal = (DISPLAYCONFIG_DEVICE_INFO_HEADER*)&requestPacket.header;
+            int __result = PInvoke.DisplayConfigGetDeviceInfo(requestPacketLocal);
+
+            if (requestPacket.curScaleRel < requestPacket.minScaleRel)
+            {
+                requestPacket.curScaleRel = requestPacket.minScaleRel;
+            }
+            else if (requestPacket.curScaleRel > requestPacket.maxScaleRel)
+            {
+                requestPacket.curScaleRel = requestPacket.maxScaleRel;
+            }
+
+            int minAbs = Math.Abs(requestPacket.minScaleRel);
+            if (DpiVals.Length >= (minAbs + requestPacket.maxScaleRel + 1))
+            {
+                dpiInfo.current = DpiVals[minAbs + requestPacket.curScaleRel];
+                dpiInfo.recommended = DpiVals[minAbs];
+                dpiInfo.maximum = DpiVals[minAbs + requestPacket.maxScaleRel];
+            }
+            return dpiInfo;
+        }
+
+        public static bool SetDisplaScaleInfo(this Display display, uint dpiPercentToSet)
+        {
+            var dPIScalingInfo = display.GetDisplaScaleInfo();
+
+            if (dpiPercentToSet == dPIScalingInfo.current)
+            {
+                return true;
+            }
+
+            if (dpiPercentToSet < dPIScalingInfo.mininum)
+            {
+                dpiPercentToSet = dPIScalingInfo.mininum;
+            }
+            else if (dpiPercentToSet > dPIScalingInfo.maximum)
+            {
+                dpiPercentToSet = dPIScalingInfo.maximum;
+            }
+
+            int idx1 = -1, idx2 = -1;
+
+            int i = 0;
+            foreach (var val in DpiVals)
+            {
+                if (val == dpiPercentToSet)
+                {
+                    idx1 = i;
+                }
+
+                if (val == dPIScalingInfo.recommended)
+                {
+                    idx2 = i;
+                }
+                i++;
+            }
+
+            if ((idx1 == -1) || (idx2 == -1))
+            {
+                return false;
+            }
+
+            int dpiRelativeVal = idx1 - idx2;
+
+            var setPacket = new DisplayConfigSourceDPIScaleSet();
+            setPacket.header.type = (DISPLAYCONFIG_DEVICE_INFO_TYPE)(-4);
+            setPacket.header.size = (uint)Marshal.SizeOf(typeof(DisplayConfigSourceDPIScaleSet));
+            setPacket.header.adapterId.HighPart = display.Adapter.ToPathDisplayAdapter().AdapterId.HighPart;
+            setPacket.header.adapterId.LowPart = display.Adapter.ToPathDisplayAdapter().AdapterId.LowPart;
+            setPacket.header.id = display.ToPathDisplayTarget().TargetId;
+            setPacket.scaleRel = dpiRelativeVal;
+            var res = PInvoke.DisplayConfigSetDeviceInfo(in setPacket.header);
+            return res != 0;
+        }
+
 
         private static async Task<bool> IsInternalAsync(this Device display)
         {
