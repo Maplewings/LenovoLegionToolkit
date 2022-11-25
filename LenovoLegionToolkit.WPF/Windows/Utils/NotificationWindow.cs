@@ -1,17 +1,24 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using LenovoLegionToolkit.Lib;
+using Windows.Win32;
+using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.UI.HiDpi;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
+using Point = System.Drawing.Point;
+
+#pragma warning disable CA1416 // Validate platform compatibility
 
 namespace LenovoLegionToolkit.WPF.Windows.Utils
 {
     public class NotificationWindow : UiWindow
     {
-        public readonly Grid _mainGrid = new()
+        private readonly Grid _mainGrid = new()
         {
             ColumnDefinitions =
             {
@@ -21,19 +28,19 @@ namespace LenovoLegionToolkit.WPF.Windows.Utils
             Margin = new(16, 16, 32, 16),
         };
 
-        public readonly SymbolIcon _symbolIcon = new()
+        private readonly SymbolIcon _symbolIcon = new()
         {
             FontSize = 32,
             Margin = new(0, 0, 16, 0),
         };
 
-        public readonly SymbolIcon _overlaySymbolIcon = new()
+        private readonly SymbolIcon _overlaySymbolIcon = new()
         {
             FontSize = 32,
             Margin = new(0, 0, 16, 0),
         };
 
-        public readonly Label _textBlock = new()
+        private readonly Label _textBlock = new()
         {
             FontSize = 16,
             FontWeight = FontWeights.Medium,
@@ -44,9 +51,9 @@ namespace LenovoLegionToolkit.WPF.Windows.Utils
         {
             InitializeStyle();
             InitializeContent(symbol, overlaySymbol, symbolTransform, text);
-            InitializePosition(position);
 
-            MouseDown += (s, e) => Close();
+            SourceInitialized += (_, _) => InitializePosition(position, GetPrimaryDesktopWorkingArea());
+            MouseDown += (_, _) => Close();
         }
 
         public void Show(int closeAfter)
@@ -56,6 +63,24 @@ namespace LenovoLegionToolkit.WPF.Windows.Utils
             {
                 Close();
             }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private Rect GetPrimaryDesktopWorkingArea()
+        {
+            var screen = PInvoke.MonitorFromPoint(Point.Empty, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTOPRIMARY);
+
+            var monitorInfo = new MONITORINFO { cbSize = (uint)Marshal.SizeOf<MONITORINFO>() };
+            if (!PInvoke.GetMonitorInfo(screen, ref monitorInfo))
+                return SystemParameters.WorkArea;
+
+            if (!PInvoke.GetDpiForMonitor(screen, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out var dpiX, out var dpiY).Succeeded)
+                return SystemParameters.WorkArea;
+
+            var workArea = monitorInfo.rcWork;
+            var multiplierX = 96d / dpiX;
+            var multiplierY = 96d / dpiY;
+
+            return new Rect(workArea.X, workArea.Y, workArea.Width * multiplierX, workArea.Height * multiplierY);
         }
 
         private void InitializeStyle()
@@ -71,14 +96,12 @@ namespace LenovoLegionToolkit.WPF.Windows.Utils
             _textBlock.Foreground = (SolidColorBrush)FindResource("TextFillColorPrimaryBrush");
         }
 
-        private void InitializePosition(NotificationPosition position)
+        private void InitializePosition(NotificationPosition position, Rect desktopWorkingArea)
         {
             _mainGrid.Measure(new Size(double.PositiveInfinity, 80));
 
             Width = MinWidth = Math.Max(_mainGrid.DesiredSize.Width, 300);
             Height = MinHeight = _mainGrid.DesiredSize.Height;
-
-            var desktopWorkingArea = SystemParameters.WorkArea;
 
             const int margin = 16;
 
