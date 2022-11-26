@@ -5,12 +5,14 @@
     xmlns:controls="clr-namespace:LenovoLegionToolkit.WPF.Controls"
     xmlns:local="clr-namespace:LenovoLegionToolkit.WPF.Windows"
     xmlns:resources="clr-namespace:LenovoLegionToolkit.WPF.Resources"
+    xmlns:utils="clr-namespace:LenovoLegionToolkit.WPF.Utils"
     xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{x:Static resources:Resource.GodModeSettingsWindow_Title}"
     Width="700"
     Height="700"
     MinWidth="600"
     MinHeight="400"
+    FlowDirection="{x:Static utils:LocalizationHelper.Direction}"
     IsVisibleChanged="GodModeSettingsWindow_IsVisibleChanged"
     Loaded="GodModeSettingsWindow_Loaded"
     ResizeMode="CanMinimize"
@@ -78,7 +80,8 @@
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_cpuLongTermPowerLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -98,7 +101,8 @@
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_cpuShortTermPowerLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -117,7 +121,8 @@
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_cpuCrossLoadingLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -136,7 +141,8 @@
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_cpuTemperatureLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}°C" />
+                                ContentStringFormat="{}{0} °C"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -161,7 +167,8 @@
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_gpuPowerBoostSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -179,7 +186,8 @@
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_gpuConfigurableTGPSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -198,7 +206,8 @@
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_gpuTemperatureLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}°C" />
+                                ContentStringFormat="{}{0} °C"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -245,7 +254,6 @@
                         <wpfui:NumberBox
                             x:Name="_maxValueOffsetNumberBox"
                             Width="120"
-                            HorizontalContentAlignment="Right"
                             ClearButtonEnabled="False"
                             IntegersOnly="True"
                             Max="100"
