@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -42,7 +43,7 @@ namespace LenovoLegionToolkit.WPF.Windows
             IsVisibleChanged += MainWindow_IsVisibleChanged;
             StateChanged += MainWindow_StateChanged;
 
-            if (Assembly.GetEntryAssembly()?.GetName()?.Version == new Version(0, 0, 1, 0))
+            if (Assembly.GetEntryAssembly()?.GetName().Version == new Version(0, 0, 1, 0))
                 _title.Text += " [BETA]";
 
 #if DEBUG
@@ -190,7 +191,7 @@ namespace LenovoLegionToolkit.WPF.Windows
             window.ShowDialog();
         }
 
-        private void NotifyIcon_LeftClick(NotifyIcon sender, RoutedEventArgs e) => BringToForeground();
+        private void NotifyIcon_LeftClick([NotNull] NotifyIcon sender, RoutedEventArgs e) => BringToForeground();
 
         private void LoadDeviceInfo()
         {
