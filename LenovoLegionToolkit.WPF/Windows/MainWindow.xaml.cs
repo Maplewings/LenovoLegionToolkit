@@ -43,7 +43,7 @@ namespace LenovoLegionToolkit.WPF.Windows
             IsVisibleChanged += MainWindow_IsVisibleChanged;
             StateChanged += MainWindow_StateChanged;
 
-            if (Assembly.GetEntryAssembly()?.GetName()?.Version == new Version(0, 0, 1, 0))
+            if (Assembly.GetEntryAssembly()?.GetName().Version == new Version(0, 0, 1, 0))
                 _title.Text += " [BETA]";
 
 #if DEBUG
@@ -181,24 +181,14 @@ namespace LenovoLegionToolkit.WPF.Windows
 
         private void DeviceInfoIndicator_Click(object sender, RoutedEventArgs e)
         {
-            var deviceInformationWindow = new DeviceInformationWindow
-            {
-                Owner = this,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                ShowInTaskbar = false,
-            };
-            deviceInformationWindow.ShowDialog();
+            var window = new DeviceInformationWindow { Owner = this };
+            window.ShowDialog();
         }
 
         private void UpdateIndicator_Click(object sender, RoutedEventArgs e)
         {
-            var updateWindow = new UpdateWindow
-            {
-                Owner = this,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                ShowInTaskbar = false,
-            };
-            updateWindow.ShowDialog();
+            var window = new UpdateWindow { Owner = this };
+            window.ShowDialog();
         }
 
         private void NotifyIcon_LeftClick([NotNull] NotifyIcon sender, RoutedEventArgs e) => BringToForeground();

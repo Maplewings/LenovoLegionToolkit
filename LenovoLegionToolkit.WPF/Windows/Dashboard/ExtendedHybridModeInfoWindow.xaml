@@ -4,11 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:LenovoLegionToolkit.WPF.Windows"
     xmlns:resources="clr-namespace:LenovoLegionToolkit.WPF.Resources"
+    xmlns:utils="clr-namespace:LenovoLegionToolkit.WPF.Utils"
     xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{x:Static resources:Resource.ExtendedHybridModeInfoWindow_Title}"
     MinWidth="550"
     MaxWidth="550"
-    SizeToContent="Height">
+    FlowDirection="{x:Static utils:LocalizationHelper.Direction}"
+    ResizeMode="CanMinimize"
+    ShowInTaskbar="False"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -18,7 +23,6 @@
 
 
         <wpfui:TitleBar
-            x:Name="_titleBar"
             Grid.Row="0"
             CanMaximize="false"
             ShowMaximize="false"
@@ -35,7 +39,6 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock
-                x:Name="_title"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 FontSize="12"
