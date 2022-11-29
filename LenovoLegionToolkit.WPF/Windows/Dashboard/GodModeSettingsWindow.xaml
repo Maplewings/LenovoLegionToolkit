@@ -5,12 +5,19 @@
     xmlns:controls="clr-namespace:LenovoLegionToolkit.WPF.Controls"
     xmlns:local="clr-namespace:LenovoLegionToolkit.WPF.Windows"
     xmlns:resources="clr-namespace:LenovoLegionToolkit.WPF.Resources"
+    xmlns:utils="clr-namespace:LenovoLegionToolkit.WPF.Utils"
     xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{x:Static resources:Resource.GodModeSettingsWindow_Title}"
     Width="700"
     Height="700"
     MinWidth="600"
-    MinHeight="400">
+    MinHeight="400"
+    FlowDirection="{x:Static utils:LocalizationHelper.Direction}"
+    IsVisibleChanged="GodModeSettingsWindow_IsVisibleChanged"
+    Loaded="GodModeSettingsWindow_Loaded"
+    ResizeMode="CanMinimize"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -19,7 +26,6 @@
         </Grid.RowDefinitions>
 
         <wpfui:TitleBar
-            x:Name="_titleBar"
             Grid.Row="0"
             CanMaximize="false"
             ShowMaximize="false"
@@ -36,7 +42,6 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock
-                x:Name="_title"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 FontSize="12"
@@ -51,7 +56,7 @@
             Margin="12,0,0,0"
             IndicatorVerticalAlignment="Center">
             <wpfui:DynamicScrollViewer>
-                <StackPanel x:Name="_stackPanel" Margin="0,0,16,0">
+                <StackPanel Margin="0,0,16,0">
 
                     <TextBlock
                         Margin="0,16,0,24"
@@ -71,12 +76,12 @@
                                 ValueChanged="CpuLongTermPowerLimitSlider_ValueChanged"
                                 Value="-1" />
                             <Label
-                                x:Name="_cpuLongTermPowerLimitValueLabel"
                                 Width="50"
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_cpuLongTermPowerLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -92,12 +97,12 @@
                                 ValueChanged="CpuShortTermPowerLimitSlider_ValueChanged"
                                 Value="-1" />
                             <Label
-                                x:Name="_cpuShortTermPowerLimitValueLabel"
                                 Width="50"
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_cpuShortTermPowerLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -112,12 +117,12 @@
                                 IsSnapToTickEnabled="True"
                                 Value="-1" />
                             <Label
-                                x:Name="_cpuCrossLoadingLimitValueLabel"
                                 Width="50"
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_cpuCrossLoadingLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -132,12 +137,12 @@
                                 IsSnapToTickEnabled="True"
                                 Value="-1" />
                             <Label
-                                x:Name="_cpuTemperatureLimitValueLabel"
                                 Width="50"
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_cpuTemperatureLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}°C" />
+                                ContentStringFormat="{}{0} °C"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -158,12 +163,12 @@
                                 IsSnapToTickEnabled="True"
                                 Value="-1" />
                             <Label
-                                x:Name="_gpuPowerBoostValueLabel"
                                 Width="50"
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_gpuPowerBoostSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -177,12 +182,12 @@
                                 Width="200"
                                 IsSnapToTickEnabled="True" />
                             <Label
-                                x:Name="_gpuConfigurableTGPValueLabel"
                                 Width="50"
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_gpuConfigurableTGPSlider, Path=Value}"
-                                ContentStringFormat="{}{0}W" />
+                                ContentStringFormat="{}{0} W"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -197,12 +202,12 @@
                                 IsSnapToTickEnabled="True"
                                 Value="-1" />
                             <Label
-                                x:Name="_gpuTemperatureLimitValueLabel"
                                 Width="50"
                                 Margin="8,0,0,0"
                                 HorizontalContentAlignment="Right"
                                 Content="{Binding ElementName=_gpuTemperatureLimitSlider, Path=Value}"
-                                ContentStringFormat="{}{0}°C" />
+                                ContentStringFormat="{}{0} °C"
+                                FlowDirection="LeftToRight" />
                         </StackPanel>
                     </wpfui:CardControl>
 
@@ -249,7 +254,6 @@
                         <wpfui:NumberBox
                             x:Name="_maxValueOffsetNumberBox"
                             Width="120"
-                            HorizontalContentAlignment="Right"
                             ClearButtonEnabled="False"
                             IntegersOnly="True"
                             Max="100"
@@ -268,12 +272,10 @@
             Orientation="Horizontal"
             Visibility="Collapsed">
             <wpfui:Button
-                x:Name="_applyButton"
                 MinWidth="120"
                 Click="ApplyButton_Click"
                 Content="{x:Static resources:Resource.Apply}" />
             <wpfui:Button
-                x:Name="_applyAndCloseButton"
                 MinWidth="120"
                 Margin="12,0,0,0"
                 Appearance="Primary"
