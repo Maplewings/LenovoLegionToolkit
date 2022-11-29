@@ -4,6 +4,7 @@ using LenovoLegionToolkit.Lib.Extensions;
 using LenovoLegionToolkit.Lib.Utils;
 using Newtonsoft.Json;
 using WindowsDisplayAPI;
+using WindowsDisplayAPI.Native.DisplayConfig;
 
 namespace LenovoLegionToolkit.Lib.Automation.Steps
 {
@@ -26,16 +27,15 @@ namespace LenovoLegionToolkit.Lib.Automation.Steps
 
         public IAutomationStep DeepCopy() => new ScreenDPIAutomationStep(State);
 
-        public Task RunAsync() => ResetHWMonitorDPIV2();
+        public Task RunAsync() => ResetHWMonitorDPI();
 
 
-        private async Task ResetHWMonitorDPIV2()
+        private async Task ResetHWMonitorDPI()
         {
-            var list = Display.GetDisplays();
-            foreach (var item in list)
+            foreach (var item in Display.GetDisplays())
             {
                 var name = item.GetTargetDeviceName();
-
+                //TODO 
                 if (!name.StartsWith("HW", StringComparison.CurrentCultureIgnoreCase))
                 {
                     continue;
@@ -47,7 +47,7 @@ namespace LenovoLegionToolkit.Lib.Automation.Steps
 
                 if (dpiInfo.current != State.DPI)
                 {
-                    var result = item.SetDisplaScaleInfo((uint)State.DPI);
+                    item.ToPathDisplaySource().CurrentDPIScale = (DisplayConfigSourceDPIScale)(uint)State.DPI;
                     Log.Instance.Trace($"set screen dpi: {State.DisplayName}");
                     MessagingCenter.Publish(new Notification(NotificationType.ScreenDPISet, NotificationDuration.Long, name));
                 }
