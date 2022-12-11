@@ -35,16 +35,17 @@ public partial class NotificationsSettingsWindow
 
         _notificationPositionComboBox.SetItems(Enum.GetValues<NotificationPosition>(), _settings.Store.NotificationPosition, v => v.GetDisplayName());
 
-        _capsNumLockToggle.IsChecked = _settings.Store.Notifications.CapsNumLock;
-        _fnLockToggle.IsChecked = _settings.Store.Notifications.FnLock;
-        _touchpadLockToggle.IsChecked = _settings.Store.Notifications.TouchpadLock;
-        _keyboardBacklightToggle.IsChecked = _settings.Store.Notifications.KeyboardBacklight;
-        _cameraLockToggle.IsChecked = _settings.Store.Notifications.CameraLock;
-        _microphoneToggle.IsChecked = _settings.Store.Notifications.Microphone;
-        _powerModeToggle.IsChecked = _settings.Store.Notifications.PowerMode;
-        _refreshRateToggle.IsChecked = _settings.Store.Notifications.RefreshRate;
-        _acAdapterToggle.IsChecked = _settings.Store.Notifications.ACAdapter;
-        _smartKeyToggle.IsChecked = _settings.Store.Notifications.SmartKey;
+            _capsNumLockToggle.IsChecked = _settings.Store.Notifications.CapsNumLock;
+            _SetScreenDPIToggle.IsChecked = _settings.Store.Notifications.SetScreenDPI;
+            _fnLockToggle.IsChecked = _settings.Store.Notifications.FnLock;
+            _touchpadLockToggle.IsChecked = _settings.Store.Notifications.TouchpadLock;
+            _keyboardBacklightToggle.IsChecked = _settings.Store.Notifications.KeyboardBacklight;
+            _cameraLockToggle.IsChecked = _settings.Store.Notifications.CameraLock;
+            _microphoneToggle.IsChecked = _settings.Store.Notifications.Microphone;
+            _powerModeToggle.IsChecked = _settings.Store.Notifications.PowerMode;
+            _refreshRateToggle.IsChecked = _settings.Store.Notifications.RefreshRate;
+            _acAdapterToggle.IsChecked = _settings.Store.Notifications.ACAdapter;
+            _smartKeyToggle.IsChecked = _settings.Store.Notifications.SmartKey;
 
         RefreshCards();
     }
@@ -88,11 +89,21 @@ public partial class NotificationsSettingsWindow
         _settings.SynchronizeStore();
     }
 
-    private void FnLockToggle_Click(object sender, RoutedEventArgs e)
-    {
-        var state = _fnLockToggle.IsChecked;
-        if (state is null)
-            return;
+        private void SetScreenDPI_Click(object sender, RoutedEventArgs e)
+        {
+            var state = _SetScreenDPIToggle.IsChecked;
+            if (state is null)
+                return;
+
+            _settings.Store.Notifications.SetScreenDPI = state.Value;
+            _settings.SynchronizeStore();
+        }
+
+        private void FnLockToggle_Click(object sender, RoutedEventArgs e)
+        {
+            var state = _fnLockToggle.IsChecked;
+            if (state is null)
+                return;
 
         _settings.Store.Notifications.FnLock = state.Value;
         _settings.SynchronizeStore();

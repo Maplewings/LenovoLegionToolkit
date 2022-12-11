@@ -513,12 +513,12 @@ public readonly struct RGBKeyboardBacklightState
     public RGBKeyboardBacklightPreset SelectedPreset { get; }
     public Dictionary<RGBKeyboardBacklightPreset, RGBKeyboardBacklightBacklightPresetDescription> Presets { get; }
 
-    [JsonConstructor]
-    public RGBKeyboardBacklightState(RGBKeyboardBacklightPreset selectedPreset, Dictionary<RGBKeyboardBacklightPreset, RGBKeyboardBacklightBacklightPresetDescription> presets)
-    {
-        SelectedPreset = selectedPreset;
-        Presets = presets;
-    }
+        [JsonConstructor]
+        public RGBKeyboardBacklightState(RGBKeyboardBacklightPreset selectedPreset, Dictionary<RGBKeyboardBacklightPreset, RGBKeyboardBacklightBacklightPresetDescription> presets)
+        {
+            SelectedPreset = selectedPreset;
+            Presets = presets;
+        }
 }
 
 public struct ScreenDPI : IDisplayName, IEquatable<ScreenDPI>

@@ -1434,7 +1434,7 @@ Logging will be enabled automatically, if you choose to continue.</value>
     <value>Yes</value>
   </data>
   <data name="ScreenDPIAutomationStepControl_Message" xml:space="preserve">
-    <value>Set display scaling, only build-in display can be set.</value>
+    <value>Currently, only Huawei tablet screen scaling is set, and it will be configured separately according to screen rules.</value>
   </data>
   <data name="ScreenDPIAutomationStepControl_Title" xml:space="preserve">
     <value>Screen Scale</value>
