@@ -60,12 +60,12 @@ public static class Compatibility
         return (false, mi);
     }
 
-        public static async Task<MachineInformation> GetMachineInformationAsync()
+    public static async Task<MachineInformation> GetMachineInformationAsync()
+    {
+        if (!_machineInformation.HasValue)
         {
-            if (!_machineInformation.HasValue)
-            {
-                var (vendor, machineType, model, serialNumber) = await GetModelCacheDataAsync().ConfigureAwait(false);
-                var biosVersion = await GetBIOSVersionAsync().ConfigureAwait(false);
+            var (vendor, machineType, model, serialNumber) = await GetModelCacheDataAsync().ConfigureAwait(false);
+            var biosVersion = await GetBIOSVersionAsync().ConfigureAwait(false);
 
             var machineInformation = new MachineInformation
             {
@@ -202,23 +202,22 @@ public static class Compatibility
                 return true;
         }
 
-            return false;
-        }
+        return false;
+    }
 
-        private static async Task<(string, string, string, string)> GetModelCacheDataAsync()
+    private static async Task<(string, string, string, string)> GetModelCacheDataAsync()
+    {
+        var (vendor, machineType, model, serialNumber) = await GetModelDataAsync().ConfigureAwait(false);
+        ApplicationSettings _settings = IoCContainer.Resolve<ApplicationSettings>();
+        //read cache info from setting.json
+        if (_settings?.Store?.DeviceInfo != null)
         {
-            var (vendor, machineType, model, serialNumber) = await GetModelDataAsync().ConfigureAwait(false);
-            ApplicationSettings _settings = IoCContainer.Resolve<ApplicationSettings>();
-            //read cache info from setting.json
-            if (_settings?.Store?.DeviceInfo != null)
-            {
-                var deviceInfo = _settings.Store.DeviceInfo;
-                vendor = deviceInfo.Vendor ?? vendor;
-                machineType = deviceInfo.MachineType ?? machineType;
-                model = deviceInfo.Model ?? model;
-                serialNumber = deviceInfo.SerialNumber ?? serialNumber;
-            }
-            return (vendor, machineType, model, serialNumber);
+            var deviceInfo = _settings.Store.DeviceInfo;
+            vendor = deviceInfo.Vendor ?? vendor;
+            machineType = deviceInfo.MachineType ?? machineType;
+            model = deviceInfo.Model ?? model;
+            serialNumber = deviceInfo.SerialNumber ?? serialNumber;
         }
+        return (vendor, machineType, model, serialNumber);
     }
 }

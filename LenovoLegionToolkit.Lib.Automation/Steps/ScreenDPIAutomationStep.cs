@@ -44,7 +44,6 @@ public class ScreenDPIAutomationStep : IAutomationStep<ScreenDPI>
             {
                 display.ToPathDisplaySource().CurrentDPIScale = (DisplayConfigSourceDPIScale)(uint)State.DPI;
                 Log.Instance.Trace($"set screen dpi: {State.DisplayName}");
-                    MessagingCenter.Publish(new Notification(NotificationType.ScreenDPISet, NotificationDuration.Long, name));
             }
 
         }
@@ -55,7 +54,6 @@ public class ScreenDPIAutomationStep : IAutomationStep<ScreenDPI>
         foreach (var item in Display.GetDisplays())
         {
             var name = item.GetTargetDeviceName();
-            //TODO 
             if (!name.StartsWith("HW", StringComparison.CurrentCultureIgnoreCase))
             {
                 continue;
@@ -76,4 +74,4 @@ public class ScreenDPIAutomationStep : IAutomationStep<ScreenDPI>
     }
 
 }
-}
+
