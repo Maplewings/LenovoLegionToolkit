@@ -589,6 +589,9 @@ Thanks in advance!</value>
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="ExcludeRefreshRatesWindow_Description" xml:space="preserve">
+		<value>Uncheck refresh rates that you do not want to use when Fn+R shortcut is used.</value>
+	</data>
   <data name="ExcludeRefreshRatesWindow_NoRefreshRatesFound_Message" xml:space="preserve">
     <value>Make sure that laptop display is on. Lenovo Legion Toolkit can't load refresh rates for a display that is not on.</value>
   </data>
@@ -856,14 +859,14 @@ WARNING: This action will not run correctly if the internal display is off.</val
     <value>Num Lock on</value>
   </data>
   <data name="Notification_SpectrumKeyboardBacklight_Backlight" xml:space="preserve">
-		<value>Backlight {0}</value>
-	</data>
+    <value>Backlight {0}</value>
+  </data>
   <data name="Notification_SpectrumKeyboardBacklight_Brightness" xml:space="preserve">
-		<value>Brightness {0}</value>
-	</data>
+    <value>Brightness {0}</value>
+  </data>
   <data name="Notification_SpectrumKeyboardBacklight_Profile" xml:space="preserve">
-		<value>Profile {0}</value>
-	</data>
+    <value>Profile {0}</value>
+  </data>
   <data name="Notification_TouchpadOff" xml:space="preserve">
     <value>Touchpad off</value>
   </data>
@@ -889,9 +892,6 @@ Enable this option if you have conflicts with full screen applications.</value>
   <data name="NotificationsSettingsWindow_DontShowNotifications_Title" xml:space="preserve">
     <value>Don't show notifications</value>
   </data>
-  <data name="NotificationsSettingsWindow_NotificationPosition_Title" xml:space="preserve">
-    <value>Position</value>
-  </data>
   <data name="NotificationsSettingsWindow_FnLock" xml:space="preserve">
     <value>Fn Lock</value>
   </data>
@@ -900,6 +900,9 @@ Enable this option if you have conflicts with full screen applications.</value>
   </data>
   <data name="NotificationsSettingsWindow_Microphone" xml:space="preserve">
     <value>Microphone</value>
+  </data>
+  <data name="NotificationsSettingsWindow_NotificationPosition_Title" xml:space="preserve">
+    <value>Position</value>
   </data>
   <data name="NotificationsSettingsWindow_PowerMode" xml:space="preserve">
     <value>Power Mode</value>
@@ -1063,8 +1066,8 @@ You can switch mode with Fn+Q.</value>
     <value>Custom mode</value>
   </data>
   <data name="PowerPlansWindow_DefaultPowerPlan" xml:space="preserve">
-		<value>Default</value>
-	</data>
+    <value>Default</value>
+  </data>
   <data name="PowerPlansWindow_PerformanceMode" xml:space="preserve">
     <value>Performance mode</value>
   </data>
@@ -1331,8 +1334,8 @@ Restart is recommended after changing this option.</value>
     <value>No effects added.</value>
   </data>
   <data name="SpectrumKeyboardBacklightControl_ResetToDefault_Tooltip" xml:space="preserve">
-		<value>Reset to default</value>
-	</data>
+    <value>Reset to default</value>
+  </data>
   <data name="SpectrumKeyboardBacklightControl_SelectAll_ToolTip" xml:space="preserve">
     <value>Select all zones</value>
   </data>

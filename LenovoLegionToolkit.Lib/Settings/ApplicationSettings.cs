@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LenovoLegionToolkit.Lib.Settings
-{
+namespace LenovoLegionToolkit.Lib.Settings;
 
     public class ApplicationSettings : AbstractSettings<ApplicationSettings.ApplicationSettingsStore>
     {
@@ -50,8 +49,7 @@ namespace LenovoLegionToolkit.Lib.Settings
             public List<Guid> SmartKeyDoublePressActionList { get; set; } = new();
         }
 
-        protected override string FileName => "settings.json";
+    protected override string FileName => "settings.json";
 
-        public override ApplicationSettingsStore Default => new();
-    }
+    public override ApplicationSettingsStore Default => new();
 }

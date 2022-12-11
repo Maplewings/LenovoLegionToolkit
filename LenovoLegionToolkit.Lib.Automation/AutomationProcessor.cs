@@ -11,415 +11,469 @@ using LenovoLegionToolkit.Lib.Listeners;
 using LenovoLegionToolkit.Lib.Utils;
 using NeoSmart.AsyncLock;
 
-namespace LenovoLegionToolkit.Lib.Automation
+namespace LenovoLegionToolkit.Lib.Automation;
+
+public class AutomationProcessor
 {
-    public class AutomationProcessor
+    private readonly AutomationSettings _settings;
+    private readonly DisplayConfigurationListener _displayConfigurationListener;
+    private readonly ExternalDisplayListener _externalDisplayListener;
+    private readonly PowerStateListener _powerStateListener;
+    private readonly PowerModeListener _powerModeListener;
+    private readonly ProcessAutomationListener _processListener;
+    private readonly TimeAutomationListener _timeListener;
+
+    private readonly AsyncLock _ioLock = new();
+    private readonly AsyncLock _runLock = new();
+
+    private List<AutomationPipeline> _pipelines = new();
+    private CancellationTokenSource? _cts;
+
+    public bool IsEnabled => _settings.Store.IsEnabled;
+
+    public event EventHandler<List<AutomationPipeline>>? PipelinesChanged;
+
+    public AutomationProcessor(AutomationSettings settings,
+        DisplayConfigurationListener displayConfigurationListener,
+        ExternalDisplayListener externalDisplayListener,
+        PowerStateListener powerStateListener,
+        PowerModeListener powerModeListener,
+        ProcessAutomationListener processListener,
+        TimeAutomationListener timeListener)
     {
-        private readonly AutomationSettings _settings;
-        private readonly DisplayConfigurationListener _displayConfigurationListener;
-        private readonly PowerStateListener _powerStateListener;
-        private readonly PowerModeListener _powerModeListener;
-        private readonly ProcessAutomationListener _processListener;
-        private readonly TimeAutomationListener _timeListener;
+        _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+        _displayConfigurationListener = displayConfigurationListener ?? throw new ArgumentNullException(nameof(displayConfigurationListener));
+        _externalDisplayListener = externalDisplayListener ?? throw new ArgumentNullException(nameof(externalDisplayListener));
+        _powerStateListener = powerStateListener ?? throw new ArgumentNullException(nameof(powerStateListener));
+        _powerModeListener = powerModeListener ?? throw new ArgumentNullException(nameof(powerModeListener));
+        _processListener = processListener ?? throw new ArgumentNullException(nameof(processListener));
+        _timeListener = timeListener ?? throw new ArgumentNullException(nameof(timeListener));
+    }
 
-        private readonly AsyncLock _ioLock = new();
-        private readonly AsyncLock _runLock = new();
+    #region Initialization / pipeline reloading
 
-        private List<AutomationPipeline> _pipelines = new();
-        private CancellationTokenSource? _cts;
-
-        public bool IsEnabled => _settings.Store.IsEnabled;
-
-        public event EventHandler<List<AutomationPipeline>>? PipelinesChanged;
-
-        public AutomationProcessor(AutomationSettings settings,
-            DisplayConfigurationListener displayConfigurationListener,
-            PowerStateListener powerStateListener,
-            PowerModeListener powerModeListener,
-            ProcessAutomationListener processListener,
-            TimeAutomationListener timeListener)
+    public async Task InitializeAsync()
+    {
+        using (await _ioLock.LockAsync().ConfigureAwait(false))
         {
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _displayConfigurationListener = displayConfigurationListener ?? throw new ArgumentNullException(nameof(displayConfigurationListener));
-            _powerStateListener = powerStateListener ?? throw new ArgumentNullException(nameof(powerStateListener));
-            _powerModeListener = powerModeListener ?? throw new ArgumentNullException(nameof(powerModeListener));
-            _processListener = processListener ?? throw new ArgumentNullException(nameof(processListener));
-            _timeListener = timeListener ?? throw new ArgumentNullException(nameof(timeListener));
+            _displayConfigurationListener.Changed += DisplayConfigurationListener_Changed;
+            _externalDisplayListener.OnConnected += ExternalDisplayListener_OnConnected;
+            _externalDisplayListener.OnDisconnected += ExternalDisplayListener_OnDisconnected;
+            _powerStateListener.Changed += PowerStateListener_Changed;
+            _powerModeListener.Changed += PowerModeListenerOnChanged;
+            _processListener.Changed += ProcessListener_Changed;
+            _timeListener.Changed += TimeListener_Changed;
+
+            _pipelines = _settings.Store.Pipelines;
+
+            RaisePipelinesChanged();
+
+            await UpdateListenersAsync().ConfigureAwait(false);
         }
+    }
 
-        #region Initialization / pipeline reloading
-
-        public async Task InitializeAsync()
+    public async Task SetEnabledAsync(bool enabled)
+    {
+        using (await _ioLock.LockAsync().ConfigureAwait(false))
         {
-            using (await _ioLock.LockAsync().ConfigureAwait(false))
-            {
-                _displayConfigurationListener.Changed += DisplayConfigurationListener_Changed;
-                _powerStateListener.Changed += PowerStateListener_Changed;
-                _powerModeListener.Changed += PowerModeListenerOnChanged;
-                _processListener.Changed += ProcessListener_Changed;
-                _timeListener.Changed += TimeListener_Changed;
+            _settings.Store.IsEnabled = enabled;
+            _settings.SynchronizeStore();
 
-                _pipelines = _settings.Store.Pipelines;
-
-                RaisePipelinesChanged();
-
-                await UpdateListenersAsync().ConfigureAwait(false);
-            }
+            await UpdateListenersAsync().ConfigureAwait(false);
         }
+    }
 
-        public async Task SetEnabledAsync(bool enabled)
-        {
-            using (await _ioLock.LockAsync().ConfigureAwait(false))
-            {
-                _settings.Store.IsEnabled = enabled;
-                _settings.SynchronizeStore();
+    public async Task ReloadPipelinesAsync(List<AutomationPipeline> pipelines)
+    {
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Pipelines reload pending...");
 
-                await UpdateListenersAsync().ConfigureAwait(false);
-            }
-        }
-
-        public async Task ReloadPipelinesAsync(List<AutomationPipeline> pipelines)
+        using (await _ioLock.LockAsync().ConfigureAwait(false))
         {
             if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Pipelines reload pending...");
+                Log.Instance.Trace($"Pipelines reloading...");
 
-            using (await _ioLock.LockAsync().ConfigureAwait(false))
+            _pipelines = pipelines.Select(p => p.DeepCopy()).ToList();
+
+            _settings.Store.Pipelines = pipelines;
+            _settings.SynchronizeStore();
+
+            RaisePipelinesChanged();
+
+            await UpdateListenersAsync().ConfigureAwait(false);
+
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Pipelines reloaded.");
+        }
+    }
+
+    public async Task<List<AutomationPipeline>> GetPipelinesAsync()
+    {
+        using (await _ioLock.LockAsync().ConfigureAwait(false))
+            return _pipelines.Select(p => p.DeepCopy()).ToList();
+    }
+
+    #endregion
+
+    #region Run
+
+    public void RunOnStartup()
+    {
+        if (!IsEnabled)
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Not enabled. Pipeline run on startup ignored.");
+
+            return;
+        }
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Pipeline run on startup pending...");
+
+        Task.Run(() => RunAsync(new StartupAutomationEvent()));
+    }
+
+    public async Task RunNowAsync(AutomationPipeline pipeline)
+    {
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Pipeline run now pending...");
+
+        using (await _runLock.LockAsync().ConfigureAwait(false))
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Pipeline run starting...");
+
+            try
+            {
+                await pipeline.DeepCopy().RunAsync().ConfigureAwait(false);
+
+                if (Log.Instance.IsTraceEnabled)
+                    Log.Instance.Trace($"Pipeline run finished successfully.");
+            }
+            catch (Exception ex)
             {
                 if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Pipelines reloading...");
+                    Log.Instance.Trace($"Pipeline run failed.", ex);
 
-                _pipelines = pipelines.Select(p => p.DeepCopy()).ToList();
-
-                _settings.Store.Pipelines = pipelines;
-                _settings.SynchronizeStore();
-
-                RaisePipelinesChanged();
-
-                await UpdateListenersAsync().ConfigureAwait(false);
-
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Pipelines reloaded.");
+                throw;
             }
         }
+    }
 
-        public async Task<List<AutomationPipeline>> GetPipelinesAsync()
+    public async Task RunNowAsync(Guid pipelineId)
+    {
+        using (await _runLock.LockAsync().ConfigureAwait(false))
         {
-            using (await _ioLock.LockAsync().ConfigureAwait(false))
-                return _pipelines.Select(p => p.DeepCopy()).ToList();
-        }
-
-        #endregion
-
-        #region Run
-
-        public void RunOnStartup()
-        {
-            if (!IsEnabled)
-            {
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Not enabled. Pipeline run on startup ignored.");
-
+            var pipeline = _pipelines.Where(p => p.Trigger is null).FirstOrDefault(p => p.Id == pipelineId);
+            if (pipeline is null)
                 return;
-            }
 
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Pipeline run on startup pending...");
-
-            Task.Run(() => RunAsync(new StartupAutomationEvent()));
+            await RunNowAsync(pipeline).ConfigureAwait(false);
         }
+    }
 
-        public async Task RunNowAsync(AutomationPipeline pipeline)
+    private async Task RunAsync(IAutomationEvent automationEvent)
+    {
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Run pending...");
+
+        using (await _runLock.LockAsync().ConfigureAwait(false))
         {
             if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Pipeline run now pending...");
+                Log.Instance.Trace($"Run starting...");
 
-            using (await _runLock.LockAsync().ConfigureAwait(false))
+            _cts?.Cancel();
+
+            if (!IsEnabled)
+                return;
+
+            List<AutomationPipeline> pipelines;
+            using (await _ioLock.LockAsync().ConfigureAwait(false))
+                pipelines = _pipelines;
+
+            _cts = new CancellationTokenSource();
+            var ct = _cts.Token;
+
+            foreach (var pipeline in pipelines)
             {
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Pipeline run starting...");
+                if (ct.IsCancellationRequested)
+                {
+                    if (Log.Instance.IsTraceEnabled)
+                        Log.Instance.Trace($"Run interrupted.");
+                    break;
+                }
 
                 try
                 {
-                    await pipeline.DeepCopy().RunAsync().ConfigureAwait(false);
+                    if (pipeline.Trigger is null || !await pipeline.Trigger.IsSatisfiedAsync(automationEvent).ConfigureAwait(false))
+                    {
+                        if (Log.Instance.IsTraceEnabled)
+                            Log.Instance.Trace($"Pipeline triggers not satisfied. [name={pipeline.Name}, trigger={pipeline.Trigger}, steps.Count={pipeline.Steps.Count}]");
+                        continue;
+                    }
 
                     if (Log.Instance.IsTraceEnabled)
-                        Log.Instance.Trace($"Pipeline run finished successfully.");
+                        Log.Instance.Trace($"Running pipeline... [name={pipeline.Name}, trigger={pipeline.Trigger}, steps.Count={pipeline.Steps.Count}]");
+
+                    await pipeline.RunAsync(ct).ConfigureAwait(false);
+
+                    if (Log.Instance.IsTraceEnabled)
+                        Log.Instance.Trace($"Pipeline completed successfully. [name={pipeline.Name}, trigger={pipeline.Trigger}]");
                 }
                 catch (Exception ex)
                 {
                     if (Log.Instance.IsTraceEnabled)
-                        Log.Instance.Trace($"Pipeline run failed.", ex);
-
-                    throw;
+                        Log.Instance.Trace($"Pipeline run failed. [name={pipeline.Name}, trigger={pipeline.Trigger}]", ex);
                 }
-            }
-        }
 
-        public async Task RunNowAsync(Guid pipelineId)
-        {
-            using (await _runLock.LockAsync().ConfigureAwait(false))
-            {
-                var pipeline = _pipelines.Where(p => p.Trigger is null).FirstOrDefault(p => p.Id == pipelineId);
-                if (pipeline is null)
-                    return;
-
-                await RunNowAsync(pipeline).ConfigureAwait(false);
-            }
-        }
-
-        private async Task RunAsync(IAutomationEvent automationEvent)
-        {
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Run pending...");
-
-            using (await _runLock.LockAsync().ConfigureAwait(false))
-            {
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Run starting...");
-
-                _cts?.Cancel();
-
-                if (!IsEnabled)
-                    return;
-
-                List<AutomationPipeline> pipelines;
-                using (await _ioLock.LockAsync().ConfigureAwait(false))
-                    pipelines = _pipelines;
-
-                _cts = new CancellationTokenSource();
-                var ct = _cts.Token;
-
-                foreach (var pipeline in pipelines)
+                if (pipeline.IsExclusive)
                 {
-                    if (ct.IsCancellationRequested)
-                    {
-                        if (Log.Instance.IsTraceEnabled)
-                            Log.Instance.Trace($"Run interrupted.");
-                        break;
-                    }
-
-                    try
-                    {
-                        if (pipeline.Trigger is null || !await pipeline.Trigger.IsSatisfiedAsync(automationEvent).ConfigureAwait(false))
-                        {
-                            if (Log.Instance.IsTraceEnabled)
-                                Log.Instance.Trace($"Pipeline triggers not satisfied. [name={pipeline.Name}, trigger={pipeline.Trigger}, steps.Count={pipeline.Steps.Count}]");
-                            continue;
-                        }
-
-                        if (Log.Instance.IsTraceEnabled)
-                            Log.Instance.Trace($"Running pipeline... [name={pipeline.Name}, trigger={pipeline.Trigger}, steps.Count={pipeline.Steps.Count}]");
-
-                        await pipeline.RunAsync(ct).ConfigureAwait(false);
-
-                        if (Log.Instance.IsTraceEnabled)
-                            Log.Instance.Trace($"Pipeline completed successfully. [name={pipeline.Name}, trigger={pipeline.Trigger}]");
-                    }
-                    catch (Exception ex)
-                    {
-                        if (Log.Instance.IsTraceEnabled)
-                            Log.Instance.Trace($"Pipeline run failed. [name={pipeline.Name}, trigger={pipeline.Trigger}]", ex);
-                    }
-
-                    if (pipeline.IsExclusive)
-                    {
-                        if (Log.Instance.IsTraceEnabled)
-                            Log.Instance.Trace($"Pipeline is exclusive. Breaking. [name={pipeline.Name}, trigger={pipeline.Trigger}, steps.Count={pipeline.Steps.Count}]");
-                        break;
-                    }
+                    if (Log.Instance.IsTraceEnabled)
+                        Log.Instance.Trace($"Pipeline is exclusive. Breaking. [name={pipeline.Name}, trigger={pipeline.Trigger}, steps.Count={pipeline.Steps.Count}]");
+                    break;
                 }
-
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Run finished successfully.");
-            }
-        }
-
-        #endregion
-
-        #region Listeners
-
-        private async void DisplayConfigurationListener_Changed(object? sender, EventArgs _)
-        {
-            var e = new DisplayChangedAutomationEvent();
-            await ProcessEvent(e).ConfigureAwait(false);
-        }
-
-        private async void PowerStateListener_Changed(object? sender, EventArgs _)
-        {
-            var e = new PowerStateAutomationEvent();
-            await ProcessEvent(e).ConfigureAwait(false);
-        }
-
-        private async void PowerModeListenerOnChanged(object? sender, PowerModeState powerModeState)
-        {
-            var e = new PowerModeAutomationEvent { PowerModeState = powerModeState };
-            await ProcessEvent(e).ConfigureAwait(false);
-        }
-
-        private async void ProcessListener_Changed(object? sender, ProcessEventInfo processEventInfo)
-        {
-            var e = new ProcessAutomationEvent { ProcessEventInfo = processEventInfo };
-            await ProcessEvent(e).ConfigureAwait(false);
-        }
-
-        private async void TimeListener_Changed(object? sender, Time time)
-        {
-            var e = new TimeAutomationEvent { Time = time };
-            await ProcessEvent(e).ConfigureAwait(false);
-        }
-
-        #endregion
-
-        #region Event processing
-
-        private async Task ProcessEvent(DisplayChangedAutomationEvent e)
-        {
-            var potentialMatch = _pipelines.Select(p => p.Trigger)
-                .Where(t => t is not null)
-                .Where(t => t is IDisplayChangeAutomationPipelineTrigger)
-                .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
-                .Select(t => t.Result)
-                .Where(t => t)
-                .Any();
-
-            if (!potentialMatch)
-                return;
-
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Processing display change event.");
-
-            await RunAsync(e).ConfigureAwait(false);
-        }
-
-        private async Task ProcessEvent(PowerStateAutomationEvent e)
-        {
-            var potentialMatch = _pipelines.Select(p => p.Trigger)
-                .Where(t => t is not null)
-                .Where(t => t is IPowerStateAutomationPipelineTrigger)
-                .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
-                .Select(t => t.Result)
-                .Where(t => t)
-                .Any();
-
-            if (!potentialMatch)
-                return;
-
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Processing power state event.");
-
-            await RunAsync(e).ConfigureAwait(false);
-        }
-
-        private async Task ProcessEvent(PowerModeAutomationEvent e)
-        {
-            var potentialMatch = _pipelines.Select(p => p.Trigger)
-                .Where(t => t is not null)
-                .Where(t => t is IPowerModeAutomationPipelineTrigger)
-                .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
-                .Select(t => t.Result)
-                .Where(t => t)
-                .Any();
-
-            if (!potentialMatch)
-                return;
-
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Processing power mode event. [powerModeState={e.PowerModeState}]");
-
-            await RunAsync(e).ConfigureAwait(false);
-        }
-
-        private async Task ProcessEvent(ProcessAutomationEvent e)
-        {
-            var potentialMatch = _pipelines.Select(p => p.Trigger)
-                .Where(t => t is not null)
-                .Where(t => t is IProcessesAutomationPipelineTrigger)
-                .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
-                .Select(t => t.Result)
-                .Where(t => t)
-                .Any();
-
-            if (!potentialMatch)
-                return;
-
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Processing process event. [process.Name={e.ProcessEventInfo.Process.Name}, type={e.ProcessEventInfo.Type}]");
-
-            await RunAsync(e).ConfigureAwait(false);
-        }
-
-        private async Task ProcessEvent(TimeAutomationEvent e)
-        {
-            var potentialMatch = _pipelines.Select(p => p.Trigger)
-                .Where(t => t is not null)
-                .Where(t => t is TimeAutomationPipelineTrigger)
-                .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
-                .Select(t => t.Result)
-                .Where(t => t)
-                .Any();
-
-            if (!potentialMatch)
-                return;
-
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Processing time event. [time={e.Time.Hour}:{e.Time.Minute}]");
-
-            await RunAsync(e).ConfigureAwait(false);
-        }
-
-        #endregion
-
-        #region Helper methods
-
-        private async Task UpdateListenersAsync()
-        {
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Stopping listeners...");
-
-            await _timeListener.StopAsync().ConfigureAwait(false);
-            await _processListener.StopAsync().ConfigureAwait(false);
-
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Stopped listeners...");
-
-            if (!IsEnabled)
-            {
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Not enabled. Will not start listeners.");
-                return;
             }
 
             if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Starting listeners...");
-
-            var triggers = _pipelines.Select(p => p.Trigger).ToArray();
-
-            if (triggers.OfType<IProcessesAutomationPipelineTrigger>().Any())
-            {
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Starting process listener...");
-
-                await _processListener.StartAsync().ConfigureAwait(false);
-            }
-
-            if (triggers.OfType<TimeAutomationPipelineTrigger>().Any())
-            {
-                if (Log.Instance.IsTraceEnabled)
-                    Log.Instance.Trace($"Starting time listener...");
-
-                await _timeListener.StartAsync().ConfigureAwait(false);
-            }
-
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Started relevant listeners.");
+                Log.Instance.Trace($"Run finished successfully.");
         }
-
-        private void RaisePipelinesChanged()
-        {
-            PipelinesChanged?.Invoke(this, _pipelines.Select(p => p.DeepCopy()).ToList());
-        }
-
-        #endregion
-
     }
+
+    #endregion
+
+    #region Listeners
+
+    private async void DisplayConfigurationListener_Changed(object? sender, EventArgs _)
+    {
+        var e = new DisplayChangedAutomationEvent();
+        await ProcessEvent(e).ConfigureAwait(false);
+    }
+
+    private async void ExternalDisplayListener_OnConnected(object? sender, EventArgs _)
+    {
+        var e = new ExternalDisplayConnectedAutomationEvent();
+        await ProcessEvent(e).ConfigureAwait(false);
+    }
+
+    private async void ExternalDisplayListener_OnDisconnected(object? sender, EventArgs _)
+    {
+        var e = new ExternalDisplayDisconnectedAutomationEvent();
+        await ProcessEvent(e).ConfigureAwait(false);
+    }
+
+    private async void PowerStateListener_Changed(object? sender, EventArgs _)
+    {
+        var e = new PowerStateAutomationEvent();
+        await ProcessEvent(e).ConfigureAwait(false);
+    }
+
+    private async void PowerModeListenerOnChanged(object? sender, PowerModeState powerModeState)
+    {
+        var e = new PowerModeAutomationEvent { PowerModeState = powerModeState };
+        await ProcessEvent(e).ConfigureAwait(false);
+    }
+
+    private async void ProcessListener_Changed(object? sender, ProcessEventInfo processEventInfo)
+    {
+        var e = new ProcessAutomationEvent { ProcessEventInfo = processEventInfo };
+        await ProcessEvent(e).ConfigureAwait(false);
+    }
+
+    private async void TimeListener_Changed(object? sender, Time time)
+    {
+        var e = new TimeAutomationEvent { Time = time };
+        await ProcessEvent(e).ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region Event processing
+
+    private async Task ProcessEvent(DisplayChangedAutomationEvent e)
+    {
+        var potentialMatch = _pipelines.Select(p => p.Trigger)
+            .Where(t => t is not null)
+            .Where(t => t is IDisplayChangeAutomationPipelineTrigger)
+            .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
+            .Select(t => t.Result)
+            .Where(t => t)
+            .Any();
+
+        if (!potentialMatch)
+            return;
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Processing display change event.");
+
+        await RunAsync(e).ConfigureAwait(false);
+    }
+
+    private async Task ProcessEvent(ExternalDisplayConnectedAutomationEvent e)
+    {
+        var potentialMatch = _pipelines.Select(p => p.Trigger)
+            .Where(t => t is not null)
+            .Where(t => t is IExternalDisplayConnectedAutomationPipelineTrigger)
+            .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
+            .Select(t => t.Result)
+            .Where(t => t)
+            .Any();
+
+        if (!potentialMatch)
+            return;
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Processing external display connected event.");
+
+        await RunAsync(e).ConfigureAwait(false);
+    }
+
+    private async Task ProcessEvent(ExternalDisplayDisconnectedAutomationEvent e)
+    {
+        var potentialMatch = _pipelines.Select(p => p.Trigger)
+            .Where(t => t is not null)
+            .Where(t => t is IExternalDisplayDisconnectedAutomationPipelineTrigger)
+            .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
+            .Select(t => t.Result)
+            .Where(t => t)
+            .Any();
+
+        if (!potentialMatch)
+            return;
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Processing external display disconnected event.");
+
+        await RunAsync(e).ConfigureAwait(false);
+    }
+
+    private async Task ProcessEvent(PowerStateAutomationEvent e)
+    {
+        var potentialMatch = _pipelines.Select(p => p.Trigger)
+            .Where(t => t is not null)
+            .Where(t => t is IPowerStateAutomationPipelineTrigger)
+            .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
+            .Select(t => t.Result)
+            .Where(t => t)
+            .Any();
+
+        if (!potentialMatch)
+            return;
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Processing power state event.");
+
+        await RunAsync(e).ConfigureAwait(false);
+    }
+
+    private async Task ProcessEvent(PowerModeAutomationEvent e)
+    {
+        var potentialMatch = _pipelines.Select(p => p.Trigger)
+            .Where(t => t is not null)
+            .Where(t => t is IPowerModeAutomationPipelineTrigger)
+            .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
+            .Select(t => t.Result)
+            .Where(t => t)
+            .Any();
+
+        if (!potentialMatch)
+            return;
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Processing power mode event. [powerModeState={e.PowerModeState}]");
+
+        await RunAsync(e).ConfigureAwait(false);
+    }
+
+    private async Task ProcessEvent(ProcessAutomationEvent e)
+    {
+        var potentialMatch = _pipelines.Select(p => p.Trigger)
+            .Where(t => t is not null)
+            .Where(t => t is IProcessesAutomationPipelineTrigger)
+            .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
+            .Select(t => t.Result)
+            .Where(t => t)
+            .Any();
+
+        if (!potentialMatch)
+            return;
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Processing process event. [process.Name={e.ProcessEventInfo.Process.Name}, type={e.ProcessEventInfo.Type}]");
+
+        await RunAsync(e).ConfigureAwait(false);
+    }
+
+    private async Task ProcessEvent(TimeAutomationEvent e)
+    {
+        var potentialMatch = _pipelines.Select(p => p.Trigger)
+            .Where(t => t is not null)
+            .Where(t => t is TimeAutomationPipelineTrigger)
+            .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
+            .Select(t => t.Result)
+            .Where(t => t)
+            .Any();
+
+        if (!potentialMatch)
+            return;
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Processing time event. [time={e.Time.Hour}:{e.Time.Minute}]");
+
+        await RunAsync(e).ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region Helper methods
+
+    private async Task UpdateListenersAsync()
+    {
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Stopping listeners...");
+
+        await _timeListener.StopAsync().ConfigureAwait(false);
+        await _processListener.StopAsync().ConfigureAwait(false);
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Stopped listeners...");
+
+        if (!IsEnabled)
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Not enabled. Will not start listeners.");
+            return;
+        }
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Starting listeners...");
+
+        var triggers = _pipelines.Select(p => p.Trigger).ToArray();
+
+        if (triggers.OfType<IProcessesAutomationPipelineTrigger>().Any())
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Starting process listener...");
+
+            await _processListener.StartAsync().ConfigureAwait(false);
+        }
+
+        if (triggers.OfType<TimeAutomationPipelineTrigger>().Any())
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Starting time listener...");
+
+            await _timeListener.StartAsync().ConfigureAwait(false);
+        }
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Started relevant listeners.");
+    }
+
+    private void RaisePipelinesChanged()
+    {
+        PipelinesChanged?.Invoke(this, _pipelines.Select(p => p.DeepCopy()).ToList());
+    }
+
+    #endregion
+
 }
