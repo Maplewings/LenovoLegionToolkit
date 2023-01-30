@@ -8,16 +8,16 @@ using WindowsDisplayAPI.Native.DisplayConfig;
 
 namespace LenovoLegionToolkit.Lib.Automation.Steps;
 
-public class ScreenDPIAutomationStep : IAutomationStep<ScreenDPI>
+public class HWScreenDPIAutomationStep : IAutomationStep<DpiScale>
 {
-    public ScreenDPI State { get; }
+    public DpiScale State { get; }
 
     [JsonConstructor]
-    public ScreenDPIAutomationStep(ScreenDPI state) => State = state;
+    public HWScreenDPIAutomationStep(DpiScale state) => State = state;
 
     public Task<bool> IsSupportedAsync() => Task.FromResult(true);
 
-    public Task<ScreenDPI[]> GetAllStatesAsync() => Task.FromResult(new ScreenDPI[] {
+    public Task<DpiScale[]> GetAllStatesAsync() => Task.FromResult(new DpiScale[] {
         new(100),
         new(125),
         new(150),
@@ -25,31 +25,11 @@ public class ScreenDPIAutomationStep : IAutomationStep<ScreenDPI>
         new(200),
     });
 
-    public IAutomationStep DeepCopy() => new ScreenDPIAutomationStep(State);
+    public IAutomationStep DeepCopy() => new HWScreenDPIAutomationStep(State);
 
     public Task RunAsync() => ResetHWMonitorDPI();
 
-
-    private async Task ResetBuiltInDisplayDPIAsync()
-    {
-        var display = await DisplayExtensions.GetBuiltInDisplayAsync().ConfigureAwait(false);
-        if (display != null)
-        {
-            var dpiInfo = display.GetDisplaScaleInfo();
-
-            if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"the current dpi of build-in display: {dpiInfo.current}");
-
-            if (dpiInfo.current != State.DPI)
-            {
-                display.ToPathDisplaySource().CurrentDPIScale = (DisplayConfigSourceDPIScale)(uint)State.DPI;
-                Log.Instance.Trace($"set screen dpi: {State.DisplayName}");
-            }
-
-        }
-    }
-
-    private async Task ResetHWMonitorDPI()
+    private Task ResetHWMonitorDPI()
     {
         foreach (var item in Display.GetDisplays())
         {
@@ -63,15 +43,16 @@ public class ScreenDPIAutomationStep : IAutomationStep<ScreenDPI>
             if (Log.Instance.IsTraceEnabled)
                 Log.Instance.Trace($"hw screen name: {name}, current dpi: {dpiInfo.current}");
 
-            if (dpiInfo.current != State.DPI)
+            if (dpiInfo.current != State.Scale)
             {
-                item.ToPathDisplaySource().CurrentDPIScale = (DisplayConfigSourceDPIScale)(uint)State.DPI;
+                item.ToPathDisplaySource().CurrentDPIScale = (DisplayConfigSourceDPIScale)(uint)State.Scale;
                 Log.Instance.Trace($"set screen dpi: {State.DisplayName}");
                 MessagingCenter.Publish(new Notification(NotificationType.ScreenDPISet, NotificationDuration.Long, name));
             }
 
         }
-    }
 
+        return Task.CompletedTask;
+    }
 }
 

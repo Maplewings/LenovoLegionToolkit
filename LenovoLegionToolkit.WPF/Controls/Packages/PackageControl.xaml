@@ -15,15 +15,61 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
 
+                <StackPanel
+                    x:Name="_updateRebootStackPanel"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,0,0,8"
+                    Orientation="Horizontal">
+
+                    <StackPanel x:Name="_isUpdateStackPanel" Orientation="Horizontal">
+                        <wpfui:SymbolIcon
+                            Margin="0,0,4,0"
+                            FontSize="18"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+                            Symbol="ArrowSync24" />
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+                            Text="{x:Static resources:Resource.PackageControl_IsUpdateInfo}"
+                            TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+
+                    <StackPanel
+                        x:Name="_rebootStackPanel"
+                        Margin="16,0,0,0"
+                        Orientation="Horizontal">
+                        <wpfui:SymbolIcon
+                            Margin="0,0,4,0"
+                            FontSize="18"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource SystemFillColorCautionBrush}"
+                            Symbol="Warning24" />
+                        <TextBlock
+                            x:Name="_rebootTextBlock"
+                            FontSize="14"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource SystemFillColorCautionBrush}"
+                            Text="{x:Static resources:Resource.PackageControl_RebootRecommended}"
+                            TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+
+
+
+                </StackPanel>
+
                 <TextBlock
                     x:Name="_dateTextBlock"
-                    Grid.Row="0"
+                    Grid.Row="1"
                     Grid.Column="0"
                     FontSize="12"
                     TextTrimming="CharacterEllipsis">
@@ -34,10 +80,11 @@
 
                 <TextBlock
                     x:Name="_categoryTextBlock"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="0"
                     Margin="0,4,0,8"
-                    FontWeight="Medium">
+                    FontWeight="Medium"
+                    MouseRightButtonUp="CopyToClipboard_MouseRightButtonUp">
                     <TextBlock.Foreground>
                         <SolidColorBrush Color="{DynamicResource TextFillColorTertiary}" />
                     </TextBlock.Foreground>
@@ -45,18 +92,20 @@
 
                 <TextBlock
                     x:Name="_titleTextBlock"
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Grid.Column="0"
                     FontSize="14"
                     FontWeight="Medium"
+                    MouseRightButtonUp="CopyToClipboard_MouseRightButtonUp"
                     TextTrimming="CharacterEllipsis" />
 
                 <TextBlock
                     x:Name="_descriptionTextBlock"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.Column="0"
                     Margin="0,8,0,8"
                     FontSize="13"
+                    MouseRightButtonUp="CopyToClipboard_MouseRightButtonUp"
                     TextWrapping="Wrap">
                     <TextBlock.Foreground>
                         <SolidColorBrush Color="{DynamicResource TextFillColorSecondary}" />
@@ -65,9 +114,10 @@
 
                 <TextBlock
                     x:Name="_detailTextBlock"
-                    Grid.Row="4"
+                    Grid.Row="5"
                     Grid.Column="0"
                     Margin="0,4,0,0"
+                    MouseRightButtonUp="CopyToClipboard_MouseRightButtonUp"
                     TextTrimming="CharacterEllipsis">
                     <TextBlock.Foreground>
                         <SolidColorBrush Color="{DynamicResource TextFillColorTertiary}" />
@@ -76,7 +126,7 @@
 
                 <TextBlock
                     x:Name="_warningTextBlock"
-                    Grid.Row="5"
+                    Grid.Row="6"
                     Grid.Column="0"
                     Margin="0,4,0,0"
                     Foreground="{DynamicResource SystemFillColorCautionBrush}"
@@ -109,7 +159,7 @@
                 <StackPanel
                     x:Name="_downloadingStackPanel"
                     Grid.Row="0"
-                    Grid.RowSpan="6"
+                    Grid.RowSpan="7"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"

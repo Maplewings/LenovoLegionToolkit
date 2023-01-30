@@ -1,26 +1,42 @@
-﻿using System.Management;
+﻿using System;
+using System.Management;
 using System.Threading.Tasks;
-using LenovoLegionToolkit.Lib.Features;
+using LenovoLegionToolkit.Lib.System;
 
 namespace LenovoLegionToolkit.Lib.Listeners;
 
 public class ThermalModeListener : AbstractWMIListener<ThermalModeState>
 {
-    private readonly PowerModeFeature _powerModeFeature;
-    private readonly PowerModeListener _powerModeListener;
+    public ThermalModeListener() : base("ROOT\\WMI", "LENOVO_GAMEZONE_THERMAL_MODE_EVENT") { }
 
-    public ThermalModeListener(PowerModeFeature powerModeFeature, PowerModeListener powerModeListener)
-        : base("ROOT\\WMI", "LENOVO_GAMEZONE_THERMAL_MODE_EVENT")
+    protected override ThermalModeState GetValue(PropertyDataCollection properties)
     {
-        _powerModeFeature = powerModeFeature;
-        _powerModeListener = powerModeListener;
+        var property = properties["mode"];
+        var propertyValue = Convert.ToInt32(property.Value);
+        var value = (ThermalModeState)(object)propertyValue;
+
+        if (!Enum.IsDefined(value))
+            value = ThermalModeState.Unknown;
+
+        return value;
     }
 
-    protected override ThermalModeState GetValue(PropertyDataCollection properties) => ThermalModeState.IrrelevantAndBuggy;
-
-    protected override async Task OnChangedAsync(ThermalModeState _)
+    protected override async Task OnChangedAsync(ThermalModeState state)
     {
-        var state = await _powerModeFeature.GetStateAsync();
-        await _powerModeListener.NotifyAsync(state);
+        if (state == ThermalModeState.Unknown)
+            return;
+
+        switch (state)
+        {
+            case ThermalModeState.Quiet:
+                await Power.ActivatePowerPlanAsync(PowerModeState.Quiet).ConfigureAwait(false);
+                break;
+            case ThermalModeState.Balanced:
+                await Power.ActivatePowerPlanAsync(PowerModeState.Balance).ConfigureAwait(false);
+                break;
+            case ThermalModeState.Performance:
+                await Power.ActivatePowerPlanAsync(PowerModeState.Performance).ConfigureAwait(false);
+                break;
+        }
     }
 }

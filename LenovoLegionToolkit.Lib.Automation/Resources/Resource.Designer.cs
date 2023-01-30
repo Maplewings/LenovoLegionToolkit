@@ -169,7 +169,7 @@ namespace LenovoLegionToolkit.Lib.Automation.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When app is running.
+        ///   Looks up a localized string similar to When app starts.
         /// </summary>
         public static string ProcessesAreRunningAutomationPipelineTrigger_DisplayName {
             get {

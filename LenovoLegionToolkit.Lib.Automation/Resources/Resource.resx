@@ -95,7 +95,7 @@
     <value>When power mode is changed</value>
   </data>
   <data name="ProcessesAreRunningAutomationPipelineTrigger_DisplayName" xml:space="preserve">
-    <value>When app is running</value>
+    <value>When app starts</value>
   </data>
   <data name="ProcessesStopRunningAutomationPipelineTrigger_DisplayName" xml:space="preserve">
     <value>When app closes</value>

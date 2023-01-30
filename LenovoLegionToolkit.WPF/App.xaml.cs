@@ -18,6 +18,7 @@ using LenovoLegionToolkit.Lib.Automation;
 using LenovoLegionToolkit.Lib.Controllers;
 using LenovoLegionToolkit.Lib.Extensions;
 using LenovoLegionToolkit.Lib.Features;
+using LenovoLegionToolkit.Lib.Listeners;
 using LenovoLegionToolkit.Lib.Utils;
 using LenovoLegionToolkit.WPF.Extensions;
 using LenovoLegionToolkit.WPF.Resources;
@@ -47,6 +48,8 @@ public partial class App
 
         var args = e.Args.Concat(LoadExternalArgs()).ToArray();
 
+        CheckFeatureFlags(args);
+
         if (IsTraceEnabled(args))
             Log.Instance.IsTraceEnabled = true;
 
@@ -74,10 +77,11 @@ public partial class App
         if (ShouldForceDisableSpectrumKeyboardSupport(args))
             IoCContainer.Resolve<SpectrumKeyboardBacklightController>().ForceDisable = true;
 
-        await InitAutomationProcessor();
-        await InitPowerModeFeature();
-        await InitRGBKeyboardController();
-        await InitSpectrumKeyboardController();
+        await InitPowerModeFeatureAsync();
+        await InitBatteryFeatureAsync();
+        await InitRGBKeyboardControllerAsync();
+        await InitSpectrumKeyboardControllerAsync();
+        await InitAutomationProcessorAsync();
 
 #if !DEBUG
             Autorun.Validate();
@@ -161,6 +165,16 @@ public partial class App
             }
         }
         catch { }
+
+        try
+        {
+            if (IoCContainer.TryResolve<NativeWindowsMessageListener>() is { } nativeMessageWindowListener)
+            {
+                await nativeMessageWindowListener.StopAsync();
+            }
+        }
+        catch { }
+
 
         Shutdown();
     }
@@ -266,7 +280,7 @@ public partial class App
         }.Start();
     }
 
-    private static async Task InitAutomationProcessor()
+    private static async Task InitAutomationProcessorAsync()
     {
         try
         {
@@ -284,7 +298,7 @@ public partial class App
         }
     }
 
-    private static async Task InitPowerModeFeature()
+    private static async Task InitPowerModeFeatureAsync()
     {
         try
         {
@@ -294,7 +308,7 @@ public partial class App
                 if (Log.Instance.IsTraceEnabled)
                     Log.Instance.Trace($"Ensuring AI Mode is set...");
 
-                await IoCContainer.Resolve<PowerModeFeature>().EnsureAIModeIsSetAsync();
+                await feature.EnsureAIModeIsSetAsync();
             }
         }
         catch (Exception ex)
@@ -311,7 +325,7 @@ public partial class App
                 if (Log.Instance.IsTraceEnabled)
                     Log.Instance.Trace($"Ensuring correct power plan is set...");
 
-                await IoCContainer.Resolve<PowerModeFeature>().EnsureCorrectPowerPlanIsSetAsync();
+                await feature.EnsureCorrectPowerPlanIsSetAsync();
             }
         }
         catch (Exception ex)
@@ -321,7 +335,27 @@ public partial class App
         }
     }
 
-    private static async Task InitRGBKeyboardController()
+    private static async Task InitBatteryFeatureAsync()
+    {
+        try
+        {
+            var feature = IoCContainer.Resolve<BatteryFeature>();
+            if (await feature.IsSupportedAsync())
+            {
+                if (Log.Instance.IsTraceEnabled)
+                    Log.Instance.Trace($"Ensuring correct battery mode is set...");
+
+                await feature.EnsureCorrectBatteryModeIsSetAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Couldn't ensure correct battery mode.", ex);
+        }
+    }
+
+    private static async Task InitRGBKeyboardControllerAsync()
     {
         try
         {
@@ -346,7 +380,7 @@ public partial class App
         }
     }
 
-    private static async Task InitSpectrumKeyboardController()
+    private static async Task InitSpectrumKeyboardControllerAsync()
     {
         try
         {
@@ -443,6 +477,17 @@ public partial class App
         }
 
         return result;
+    }
+
+    private static void CheckFeatureFlags(IEnumerable<string> args)
+    {
+        FeatureFlags.CheckUpdates = args.Contains("--ff-check-updates");
+
+        if (Log.Instance.IsTraceEnabled)
+        {
+            Log.Instance.Trace($"Feature flags:");
+            Log.Instance.Trace($" - {nameof(FeatureFlags.CheckUpdates)}: {FeatureFlags.CheckUpdates}");
+        }
     }
 
     #endregion

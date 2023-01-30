@@ -25,6 +25,8 @@ namespace LenovoLegionToolkit.WPF.Controls.Automation.Pipeline;
 
 public class AutomationPipelineControl : UserControl
 {
+    private readonly TaskCompletionSource _initializedTaskCompletionSource = new();
+
     private readonly AutomationProcessor _automationProcessor = IoCContainer.Resolve<AutomationProcessor>();
 
     private readonly CardExpander _cardExpander = new()
@@ -79,14 +81,19 @@ public class AutomationPipelineControl : UserControl
         MinWidth = 100,
     };
 
+    private readonly IAutomationStep[] _supportedAutomationSteps;
+
     public AutomationPipeline AutomationPipeline { get; }
 
     public event EventHandler? OnChanged;
     public event EventHandler? OnDelete;
 
-    public AutomationPipelineControl(AutomationPipeline automationPipeline)
+    public Task InitializedTask => _initializedTaskCompletionSource.Task;
+
+    public AutomationPipelineControl(AutomationPipeline automationPipeline, IAutomationStep[] supportedAutomationSteps)
     {
         AutomationPipeline = automationPipeline;
+        _supportedAutomationSteps = supportedAutomationSteps;
 
         Initialized += AutomationPipelineControl_Initialized;
     }
@@ -114,7 +121,7 @@ public class AutomationPipelineControl : UserControl
         OnChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private async void AutomationPipelineControl_Initialized(object? sender, EventArgs e)
+    private void AutomationPipelineControl_Initialized(object? sender, EventArgs e)
     {
         _cardExpander.Header = _cardHeaderControl;
 
@@ -127,23 +134,23 @@ public class AutomationPipelineControl : UserControl
         if (AutomationPipeline.Trigger is not null)
         {
             _isExclusiveCheckBox.IsChecked = AutomationPipeline.IsExclusive;
-            _isExclusiveCheckBox.Checked += (s, e) => OnChanged?.Invoke(this, EventArgs.Empty);
+            _isExclusiveCheckBox.Checked += (_, _) => OnChanged?.Invoke(this, EventArgs.Empty);
         }
         else
         {
             _isExclusiveCheckBox.Visibility = Visibility.Hidden;
         }
 
-        _runNowButton.Click += async (s, e) => await RunAsync();
+        _runNowButton.Click += async (_, _) => await RunAsync();
 
-        _addStepButton.ContextMenu = await CreateAddStepContextMenuAsync();
-        _addStepButton.Click += (s, e) =>
+        _addStepButton.ContextMenu = CreateAddStepContextMenu();
+        _addStepButton.Click += (_, _) =>
         {
             if (_addStepButton.ContextMenu is not null)
                 _addStepButton.ContextMenu.IsOpen = true;
         };
 
-        _deletePipelineButton.Click += (s, e) => OnDelete?.Invoke(this, EventArgs.Empty);
+        _deletePipelineButton.Click += (_, _) => OnDelete?.Invoke(this, EventArgs.Empty);
 
         Grid.SetColumn(_isExclusiveCheckBox, 0);
         Grid.SetColumn(_runNowButton, 1);
@@ -166,6 +173,8 @@ public class AutomationPipelineControl : UserControl
         _cardExpander.Content = _stackPanel;
 
         Content = _cardExpander;
+
+        _initializedTaskCompletionSource.TrySetResult();
     }
 
     private async Task RunAsync()
@@ -252,10 +261,10 @@ public class AutomationPipelineControl : UserControl
                 Margin = new(16, 0, 16, 0),
                 MinWidth = 120,
             };
-            button.Click += (s, e) =>
+            button.Click += (_, _) =>
             {
                 var window = new PowerModeWindow(pmt.PowerModeState) { Owner = Window.GetWindow(this) };
-                window.OnSave += (s, e) =>
+                window.OnSave += (_, e) =>
                 {
                     AutomationPipeline.Trigger = pmt.DeepCopy(e);
                     _cardHeaderControl.Subtitle = GenerateSubtitle();
@@ -276,10 +285,10 @@ public class AutomationPipelineControl : UserControl
                 Margin = new(16, 0, 16, 0),
                 MinWidth = 120,
             };
-            button.Click += (s, e) =>
+            button.Click += (_, _) =>
             {
                 var window = new PickProcessesWindow(pt.Processes) { Owner = Window.GetWindow(this) };
-                window.OnSave += (s, e) =>
+                window.OnSave += (_, e) =>
                 {
                     AutomationPipeline.Trigger = pt.DeepCopy(e);
                     _cardHeaderControl.Subtitle = GenerateSubtitle();
@@ -301,10 +310,10 @@ public class AutomationPipelineControl : UserControl
                 Margin = new(16, 0, 16, 0),
                 MinWidth = 120,
             };
-            button.Click += (s, e) =>
+            button.Click += (_, _) =>
             {
                 var window = new TimeWindow(tt.IsSunrise, tt.IsSunset, tt.Time) { Owner = Window.GetWindow(this) };
-                window.OnSave += (s, e) =>
+                window.OnSave += (_, e) =>
                 {
                     AutomationPipeline.Trigger = tt.DeepCopy(e.Item1, e.Item2, e.Item3);
                     _cardHeaderControl.Subtitle = GenerateSubtitle();
@@ -320,40 +329,15 @@ public class AutomationPipelineControl : UserControl
         return null;
     }
 
-    private async Task<ContextMenu> CreateAddStepContextMenuAsync()
+    private ContextMenu CreateAddStepContextMenu()
     {
-        var steps = new IAutomationStep[] {
-            new AlwaysOnUsbAutomationStep(default),
-            new BatteryAutomationStep(default),
-            new DeactivateGPUAutomationStep(default),
-            new DelayAutomationStep(default),
-            new DisplayBrightnessAutomationStep(50),
-            new FlipToStartAutomationStep(default),
-            new FnLockAutomationStep(default),
-            new OverDriveAutomationStep(default),
-            new PowerModeAutomationStep(default),
-            new RefreshRateAutomationStep(default),
-            new HDRAutomationStep(default),
-            new RGBKeyboardBacklightAutomationStep(default),
-            new RunAutomationStep(default, default),
-            new ScreenDPIAutomationStep(default),
-            new SpectrumKeyboardBacklightBrightnessAutomationStep(0),
-            new SpectrumKeyboardBacklightProfileAutomationStep(1),
-            new TouchpadLockAutomationStep(default),
-            new WhiteKeyboardBacklightAutomationStep(default),
-            new WinKeyAutomationStep(default),
-        };
-
         var menuItems = new List<MenuItem>();
 
-        foreach (var step in steps)
+        foreach (var step in _supportedAutomationSteps)
         {
-            if (!await step.IsSupportedAsync())
-                continue;
-
             var control = GenerateStepControl(step);
             var menuItem = new MenuItem { SymbolIcon = control.Icon, Header = control.Title };
-            menuItem.Click += async (s, e) => await AddStepAsync(control);
+            menuItem.Click += (_, _) => AddStep(control);
             menuItems.Add(menuItem);
         }
 
@@ -378,35 +362,40 @@ public class AutomationPipelineControl : UserControl
             DeactivateGPUAutomationStep s => new DeactivateGPUAutomationStepControl(s),
             DelayAutomationStep s => new DelayAutomationStepControl(s),
             DisplayBrightnessAutomationStep s => new DisplayBrightnessAutomationStepControl(s),
+            DpiScaleAutomationStep s => new DpiScaleAutomationStepControl(s),
             FlipToStartAutomationStep s => new FlipToStartAutomationStepControl(s),
             FnLockAutomationStep s => new FnLockAutomationStepControl(s),
+            HDRAutomationStep s => new HDRAutomationStepControl(s),
+            MicrophoneAutomationStep s => new MicrophoneAutomationStepControl(s),
+            OneLevelWhiteKeyboardBacklightAutomationStep s => new OneLevelWhiteKeyboardBacklightAutomationStepControl(s),
             OverDriveAutomationStep s => new OverDriveAutomationStepControl(s),
             PowerModeAutomationStep s => new PowerModeAutomationStepControl(s),
             RefreshRateAutomationStep s => new RefreshRateAutomationStepControl(s),
-            HDRAutomationStep s => new HDRAutomationStepControl(s),
+            ResolutionAutomationStep s => new ResolutionAutomationStepControl(s),
             RGBKeyboardBacklightAutomationStep s => new RGBKeyboardBacklightAutomationStepControl(s),
             RunAutomationStep s => new RunAutomationStepControl(s),
-            ScreenDPIAutomationStep s => new ScreenDPIAutomationStepControl(s),
+            HWScreenDPIAutomationStep s => new HWScreenDPIAutomationStepControl(s),
             SpectrumKeyboardBacklightBrightnessAutomationStep s => new SpectrumKeyboardBacklightBrightnessAutomationStepControl(s),
             SpectrumKeyboardBacklightProfileAutomationStep s => new SpectrumKeyboardBacklightProfileAutomationStepControl(s),
+            TurnOffMonitorsAutomationStep s => new TurnOffMonitorsAutomationStepControl(s),
             TouchpadLockAutomationStep s => new TouchpadLockAutomationStepControl(s),
             WhiteKeyboardBacklightAutomationStep s => new WhiteKeyboardBacklightAutomationStepControl(s),
             WinKeyAutomationStep s => new WinKeyAutomationStepControl(s),
             _ => throw new InvalidOperationException("Unknown step type."),
         };
-        control.MouseRightButtonUp += (s, e) =>
+        control.MouseRightButtonUp += (_, e) =>
         {
             ShowContextMenu(control);
             e.Handled = true;
         };
-        control.Changed += (s, e) =>
+        control.Changed += (_, _) =>
         {
             OnChanged?.Invoke(this, EventArgs.Empty);
         };
-        control.Delete += async (s, e) =>
+        control.Delete += (s, _) =>
         {
             if (s is AbstractAutomationStepControl step)
-                await DeleteStepAsync(step);
+                DeleteStep(step);
         };
         return control;
     }
@@ -424,7 +413,7 @@ public class AutomationPipelineControl : UserControl
             Header = Resource.MoveUp
         };
         if (index > 0)
-            moveUpMenuItem.Click += (s, e) => MoveStep(control, index - 1);
+            moveUpMenuItem.Click += (_, _) => MoveStep(control, index - 1);
         else
             moveUpMenuItem.IsEnabled = false;
         menuItems.Add(moveUpMenuItem);
@@ -435,7 +424,7 @@ public class AutomationPipelineControl : UserControl
             Header = Resource.MoveDown
         };
         if (index < maxIndex)
-            moveDownMenuItem.Click += (s, e) => MoveStep(control, index + 1);
+            moveDownMenuItem.Click += (_, _) => MoveStep(control, index + 1);
         else
             moveDownMenuItem.IsEnabled = false;
 
@@ -454,22 +443,22 @@ public class AutomationPipelineControl : UserControl
         OnChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private async Task AddStepAsync(AbstractAutomationStepControl control)
+    private void AddStep(AbstractAutomationStepControl control)
     {
         _stepsStackPanel.Children.Add(control);
         _cardHeaderControl.Subtitle = GenerateSubtitle();
         _cardHeaderControl.SubtitleToolTip = _cardHeaderControl.Subtitle;
-        _addStepButton.ContextMenu = await CreateAddStepContextMenuAsync();
+        _addStepButton.ContextMenu = CreateAddStepContextMenu();
 
         OnChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private async Task DeleteStepAsync(Control control)
+    private void DeleteStep(Control control)
     {
         _stepsStackPanel.Children.Remove(control);
         _cardHeaderControl.Subtitle = GenerateSubtitle();
         _cardHeaderControl.SubtitleToolTip = _cardHeaderControl.Subtitle;
-        _addStepButton.ContextMenu = await CreateAddStepContextMenuAsync();
+        _addStepButton.ContextMenu = CreateAddStepContextMenu();
 
         OnChanged?.Invoke(this, EventArgs.Empty);
     }

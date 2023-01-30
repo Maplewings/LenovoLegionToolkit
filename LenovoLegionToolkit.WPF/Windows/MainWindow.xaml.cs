@@ -1,12 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using LenovoLegionToolkit.Lib;
-using LenovoLegionToolkit.Lib.Features;
 using LenovoLegionToolkit.Lib.Settings;
 using LenovoLegionToolkit.Lib.Utils;
 using LenovoLegionToolkit.WPF.Extensions;
@@ -16,32 +14,22 @@ using LenovoLegionToolkit.WPF.Utils;
 using LenovoLegionToolkit.WPF.Windows.Utils;
 using Wpf.Ui.Controls;
 
-#pragma warning disable IDE0052 // Remove unread private members
-
 namespace LenovoLegionToolkit.WPF.Windows;
 
 public partial class MainWindow
 {
-    private readonly ApplicationSettings _settings = IoCContainer.Resolve<ApplicationSettings>();
+    private readonly ApplicationSettings _applicationSettings = IoCContainer.Resolve<ApplicationSettings>();
     private readonly UpdateChecker _updateChecker = IoCContainer.Resolve<UpdateChecker>();
+
+    private readonly ContextMenuHelper _contextMenuHelper = new();
 
     public bool SuppressClosingEventHandler { get; set; }
 
     public Snackbar Snackbar => _snackbar;
 
-    private SystemEventInterceptor? _systemEventInterceptor;
-    private NotifyIcon? _notifyIcon;
-
     public MainWindow()
     {
         InitializeComponent();
-
-        SourceInitialized += MainWindow_SourceInitialized;
-        Loaded += MainWindow_Loaded;
-        Closing += MainWindow_Closing;
-        Closed += MainWindow_Closed;
-        IsVisibleChanged += MainWindow_IsVisibleChanged;
-        StateChanged += MainWindow_StateChanged;
 
         if (Assembly.GetEntryAssembly()?.GetName().Version == new Version(0, 0, 1, 0))
             _title.Text += " [BETA]";
@@ -59,53 +47,27 @@ public partial class MainWindow
 
     private void InitializeTray()
     {
-        _notifyIcon?.Unregister();
+        _contextMenuHelper.BringToForeground = BringToForeground;
+        _contextMenuHelper.Close = App.Current.ShutdownAsync;
 
-        ContextMenuHelper.Instance.BringToForeground = BringToForeground;
-        ContextMenuHelper.Instance.Close = App.Current.ShutdownAsync;
-
-        var notifyIcon = new NotifyIcon
-        {
-            TooltipText = Resource.AboutPage_AppName,
-            Icon = ImageSourceExtensions.ApplicationIcon(),
-            FocusOnLeftClick = false,
-            MenuOnRightClick = true,
-            Menu = ContextMenuHelper.Instance.ContextMenu,
-        };
-        notifyIcon.LeftClick += NotifyIcon_LeftClick;
-        notifyIcon.Register();
-
-        _notifyIcon = notifyIcon;
+        _trayIcon.TrayLeftMouseUp += (_, _) => BringToForeground();
+        _trayIcon.ContextMenu = _contextMenuHelper.ContextMenu;
     }
 
-    private void MainWindow_SourceInitialized(object? sender, EventArgs args)
-    {
-        var systemEventInterceptor = new SystemEventInterceptor(this);
-        systemEventInterceptor.OnTaskbarCreated += (_, _) => InitializeTray();
-        systemEventInterceptor.OnDisplayDeviceArrival += (_, _) => Task.Run(IoCContainer.Resolve<IGPUModeFeature>().NotifyAsync);
-        systemEventInterceptor.OnResumed += (_, _) => Task.Run(async () =>
-        {
-            await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-            await IoCContainer.Resolve<IGPUModeFeature>().NotifyAsync().ConfigureAwait(false);
-        });
-
-        _systemEventInterceptor = systemEventInterceptor;
-    }
+    private void MainWindow_SourceInitialized(object? sender, EventArgs e) => RestoreSize();
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        var loadingTask = Task.Delay(500);
+        _contentGrid.Visibility = Visibility.Hidden;
 
         if (!await KeyboardBacklightPage.IsSupportedAsync())
             _navigationStore.Items.Remove(_keyboardItem);
 
-        ContextMenuHelper.Instance.SetNavigationItems(_navigationStore);
+        _contextMenuHelper.SetNavigationItems(_navigationStore);
 
         SmartKeyHelper.Instance.BringToForeground = () => Dispatcher.Invoke(BringToForeground);
 
-        await loadingTask;
-
-        _loader.IsLoading = false;
+        _contentGrid.Visibility = Visibility.Visible;
 
         LoadDeviceInfo();
         CheckForUpdates();
@@ -115,10 +77,15 @@ public partial class MainWindow
 
     private async void MainWindow_Closing(object? sender, CancelEventArgs e)
     {
-        if (SuppressClosingEventHandler)
-            return;
+        SaveSize();
 
-        if (_settings.Store.MinimizeOnClose)
+        if (SuppressClosingEventHandler)
+        {
+            _trayIcon.Dispose();
+            return;
+        }
+
+        if (_applicationSettings.Store.MinimizeOnClose)
         {
             if (Log.Instance.IsTraceEnabled)
                 Log.Instance.Trace($"Minimizing...");
@@ -131,15 +98,8 @@ public partial class MainWindow
             if (Log.Instance.IsTraceEnabled)
                 Log.Instance.Trace($"Closing...");
 
-            _notifyIcon?.Unregister();
-
             await App.Current.ShutdownAsync();
         }
-    }
-
-    private void MainWindow_Closed(object? sender, EventArgs e)
-    {
-        _systemEventInterceptor = null;
     }
 
     private void MainWindow_StateChanged(object? sender, EventArgs e)
@@ -191,8 +151,6 @@ public partial class MainWindow
         window.ShowDialog();
     }
 
-    private void NotifyIcon_LeftClick([NotNull] NotifyIcon sender, RoutedEventArgs e) => BringToForeground();
-
     private void LoadDeviceInfo()
     {
         Task.Run(Compatibility.GetMachineInformationAsync)
@@ -215,13 +173,30 @@ public partial class MainWindow
                 }
                 else
                 {
-                    _updateIndicator.Content = string.Format(Resource.MainWindow_UpdateAvailableWithVersion, result.ToString(3));
+                    _updateIndicatorText.Text = string.Format(Resource.MainWindow_UpdateAvailableWithVersion, result.ToString(3));
                     _updateIndicator.Visibility = Visibility.Visible;
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
-    public void BringToForeground() => WindowExtensions.BringToForeground(this);
+    private void RestoreSize()
+    {
+        if (!_applicationSettings.Store.WindowSize.HasValue)
+            return;
+
+        Width = _applicationSettings.Store.WindowSize.Value.Width;
+        Height = _applicationSettings.Store.WindowSize.Value.Height;
+    }
+
+    private void SaveSize()
+    {
+        _applicationSettings.Store.WindowSize = WindowState != WindowState.Normal
+            ? new(RestoreBounds.Width, RestoreBounds.Height)
+            : new(Width, Height);
+        _applicationSettings.SynchronizeStore();
+    }
+
+    private void BringToForeground() => WindowExtensions.BringToForeground(this);
 
     public void SendToTray()
     {

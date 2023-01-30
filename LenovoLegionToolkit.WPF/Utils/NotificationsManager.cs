@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using LenovoLegionToolkit.Lib;
 using LenovoLegionToolkit.Lib.Settings;
+using LenovoLegionToolkit.Lib.Utils;
 using LenovoLegionToolkit.WPF.Resources;
 using LenovoLegionToolkit.WPF.Windows.Utils;
 using Wpf.Ui.Common;
@@ -29,11 +30,24 @@ public class NotificationsManager
 
     private void OnNotificationReceived(Notification notification) => Dispatcher.Invoke(() =>
     {
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Notification {notification} received");
+
         if (_settings.Store.DontShowNotifications)
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Notifications are disabled.");
+
             return;
+        }
 
         if (FullscreenHelper.IsAnyApplicationFullscreen())
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Some application is in fullscreen.");
+
             return;
+        }
 
         var allow = notification.Type switch
         {
@@ -50,6 +64,10 @@ public class NotificationsManager
             NotificationType.MicrophoneOff => _settings.Store.Notifications.Microphone,
             NotificationType.NumLockOn => _settings.Store.Notifications.CapsNumLock,
             NotificationType.NumLockOff => _settings.Store.Notifications.CapsNumLock,
+            NotificationType.PanelLogoLightingOn => _settings.Store.Notifications.KeyboardBacklight,
+            NotificationType.PanelLogoLightingOff => _settings.Store.Notifications.KeyboardBacklight,
+            NotificationType.PortLightingOn => _settings.Store.Notifications.KeyboardBacklight,
+            NotificationType.PortLightingOff => _settings.Store.Notifications.KeyboardBacklight,
             NotificationType.PowerModeQuiet => _settings.Store.Notifications.PowerMode,
             NotificationType.PowerModeBalance => _settings.Store.Notifications.PowerMode,
             NotificationType.PowerModePerformance => _settings.Store.Notifications.PowerMode,
@@ -71,7 +89,12 @@ public class NotificationsManager
         };
 
         if (!allow)
+        {
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Notification type {notification.Type} is disabled.");
+
             return;
+        }
 
         var symbol = notification.Type switch
         {
@@ -88,11 +111,15 @@ public class NotificationsManager
             NotificationType.MicrophoneOff => SymbolRegular.Mic24,
             NotificationType.NumLockOn => SymbolRegular.Keyboard12324,
             NotificationType.NumLockOff => SymbolRegular.Keyboard12324,
+            NotificationType.PanelLogoLightingOn => SymbolRegular.Lightbulb24,
+            NotificationType.PanelLogoLightingOff => SymbolRegular.Lightbulb24,
+            NotificationType.PortLightingOn => SymbolRegular.Lightbulb24,
+            NotificationType.PortLightingOff => SymbolRegular.Lightbulb24,
             NotificationType.PowerModeQuiet => SymbolRegular.Gauge24,
             NotificationType.PowerModeBalance => SymbolRegular.Gauge24,
             NotificationType.PowerModePerformance => SymbolRegular.Gauge24,
             NotificationType.PowerModeGodMode => SymbolRegular.Gauge24,
-            NotificationType.RefreshRate => SymbolRegular.Desktop24,
+            NotificationType.RefreshRate => SymbolRegular.DesktopPulse24,
             NotificationType.RGBKeyboardBacklightOff => SymbolRegular.Lightbulb24,
             NotificationType.RGBKeyboardBacklightChanged => SymbolRegular.Lightbulb24,
             NotificationType.ScreenDPISet => SymbolRegular.DualScreenSettings24,
@@ -116,6 +143,8 @@ public class NotificationsManager
             NotificationType.FnLockOff => SymbolRegular.Line24,
             NotificationType.MicrophoneOff => SymbolRegular.Line24,
             NotificationType.NumLockOff => SymbolRegular.Line24,
+            NotificationType.PanelLogoLightingOff => SymbolRegular.Line24,
+            NotificationType.PortLightingOff => SymbolRegular.Line24,
             NotificationType.RGBKeyboardBacklightOff => SymbolRegular.Line24,
             NotificationType.SpectrumBacklightOff => SymbolRegular.Line24,
             NotificationType.TouchpadOff => SymbolRegular.Line24,
@@ -138,6 +167,10 @@ public class NotificationsManager
             NotificationType.MicrophoneOff => Resource.Notification_MicrophoneOff,
             NotificationType.NumLockOn => Resource.Notification_NumLockOn,
             NotificationType.NumLockOff => Resource.Notification_NumLockOff,
+            NotificationType.PanelLogoLightingOn => Resource.Notification_PanelLogoLightingOn,
+            NotificationType.PanelLogoLightingOff => Resource.Notification_PanelLogoLightingOff,
+            NotificationType.PortLightingOn => Resource.Notification_PortLightingOn,
+            NotificationType.PortLightingOff => Resource.Notification_PortLightingOff,
             NotificationType.PowerModeQuiet => string.Format("{0}", notification.Args),
             NotificationType.PowerModeBalance => string.Format("{0}", notification.Args),
             NotificationType.PowerModePerformance => string.Format("{0}", notification.Args),
@@ -176,17 +209,25 @@ public class NotificationsManager
             symbolTransform = si => si.SetResourceReference(Control.ForegroundProperty, "TextFillColorTertiaryBrush");
 
         ShowNotification(symbol, overlaySymbol, symbolTransform, text, closeAfter);
+
+        if (Log.Instance.IsTraceEnabled)
+            Log.Instance.Trace($"Notification {notification} shown.");
     });
 
     private void ShowNotification(SymbolRegular symbol, SymbolRegular? overlaySymbol, Action<SymbolIcon>? symbolTransform, string text, int closeAfter)
     {
+        var mainWindow = Application.Current.MainWindow;
+
+        if (mainWindow is null)
+            return;
+
         if (_window is not null)
         {
             _window.WindowStyle = WindowStyle.None;
             _window.Close();
         }
 
-        var nw = new NotificationWindow(symbol, overlaySymbol, symbolTransform, text, _settings.Store.NotificationPosition) { Owner = Application.Current.MainWindow };
+        var nw = new NotificationWindow(symbol, overlaySymbol, symbolTransform, text, _settings.Store.NotificationPosition) { Owner = mainWindow };
         nw.Show(closeAfter);
         _window = nw;
     }

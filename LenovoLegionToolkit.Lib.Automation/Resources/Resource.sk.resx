@@ -86,7 +86,7 @@
     <value>Ked je napájací režim zmenený</value>
   </data>
   <data name="ProcessesAreRunningAutomationPipelineTrigger_DisplayName" xml:space="preserve">
-    <value>Keď je aplikácia spustená</value>
+    <value>Pri štarte aplikácie</value>
   </data>
   <data name="ProcessesStopRunningAutomationPipelineTrigger_DisplayName" xml:space="preserve">
     <value>Keď sa aplikácia zatvorí</value>
@@ -94,4 +94,10 @@
   <data name="TimeAutomationPipelineTrigger_DisplayName" xml:space="preserve">
     <value>Špecifický čas</value>
   </data>
+  <data name="ExternalDisplayConnectedAutomationPipelineTrigger_DisplayName" xml:space="preserve">
+		<value>Pri pripojení externého displeja</value>
+	</data>
+  <data name="ExternalDisplayDisconnectedAutomationPipelineTrigger_DisplayName" xml:space="preserve">
+		<value>Pri odpojení externého displeja</value>
+	</data>
 </root>

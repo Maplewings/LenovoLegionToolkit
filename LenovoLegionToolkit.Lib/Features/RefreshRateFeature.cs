@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using LenovoLegionToolkit.Lib.Extensions;
+using LenovoLegionToolkit.Lib.System;
 using LenovoLegionToolkit.Lib.Utils;
 using WindowsDisplayAPI;
 
@@ -16,7 +16,7 @@ public class RefreshRateFeature : IFeature<RefreshRate>
         if (Log.Instance.IsTraceEnabled)
             Log.Instance.Trace($"Getting all refresh rates...");
 
-        var display = await DisplayExtensions.GetBuiltInDisplayAsync().ConfigureAwait(false);
+        var display = await InternalDisplay.GetAsync().ConfigureAwait(false);
         if (display is null)
         {
             if (Log.Instance.IsTraceEnabled)
@@ -60,7 +60,7 @@ public class RefreshRateFeature : IFeature<RefreshRate>
         if (Log.Instance.IsTraceEnabled)
             Log.Instance.Trace($"Getting current refresh rate...");
 
-        var display = await DisplayExtensions.GetBuiltInDisplayAsync().ConfigureAwait(false);
+        var display = await InternalDisplay.GetAsync().ConfigureAwait(false);
         if (display is null)
         {
             if (Log.Instance.IsTraceEnabled)
@@ -80,7 +80,7 @@ public class RefreshRateFeature : IFeature<RefreshRate>
 
     public async Task SetStateAsync(RefreshRate state)
     {
-        var display = await DisplayExtensions.GetBuiltInDisplayAsync().ConfigureAwait(false);
+        var display = await InternalDisplay.GetAsync().ConfigureAwait(false);
         if (display is null)
         {
             if (Log.Instance.IsTraceEnabled)
@@ -100,15 +100,18 @@ public class RefreshRateFeature : IFeature<RefreshRate>
         var possibleSettings = display.GetPossibleSettings();
         var newSettings = possibleSettings
             .Where(dps => Match(dps, currentSettings))
-            .Select(dps => new DisplaySetting(dps, currentSettings.Position))
+            .Select(dps => new DisplaySetting(dps, currentSettings.Position, currentSettings.Orientation, currentSettings.OutputScalingMode))
             .FirstOrDefault(dps => dps.Frequency == state.Frequency);
 
         if (newSettings is not null)
         {
             if (Log.Instance.IsTraceEnabled)
-                Log.Instance.Trace($"Setting display to {newSettings}");
+                Log.Instance.Trace($"Setting display to {newSettings}...");
 
             display.SetSettings(newSettings, true);
+
+            if (Log.Instance.IsTraceEnabled)
+                Log.Instance.Trace($"Display set to {newSettings}");
         }
         else
         {

@@ -1,5 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -416,10 +475,13 @@ CẢNH BÁO: Hành động sẽ không chạy đúng nếu màn hình laptop kh�
   <data name="DeviceInformationWindow_BiosVersion_Title" xml:space="preserve">
     <value>Phiên bản BIOS</value>
   </data>
-  <data name="DeviceInformationWindow_Copied_Message" xml:space="preserve">
+  <data name="CopiedToClipboard_Message" xml:space="preserve">
+    <value>Đã chép vào bộ nhớ tạm.</value>
+  </data>
+  <data name="CopiedToClipboard_Message_WithParam" xml:space="preserve">
     <value>"{0}" sao chép vào clipboard.</value>
   </data>
-  <data name="DeviceInformationWindow_Copied_Title" xml:space="preserve">
+  <data name="CopiedToClipboard_Title" xml:space="preserve">
     <value>Đã sao chép!</value>
   </data>
   <data name="DeviceInformationWindow_Device_Title" xml:space="preserve">
@@ -530,6 +592,9 @@ Xin chân thành cảm ơn!</value>
   <data name="Edit" xml:space="preserve">
     <value>Chỉnh sửa</value>
   </data>
+  <data name="ExcludeRefreshRatesWindow_Description" xml:space="preserve">
+    <value>Bỏ tích những tần số quét mà bạn không muốn dùng khi dùng phím FN+R.</value>
+  </data>
   <data name="ExcludeRefreshRatesWindow_NoRefreshRatesFound_Message" xml:space="preserve">
     <value>Hãy đảm bảo màn hình laptop bật. Lenovo Legion Toolkit không thể đổi tần số quét nếu màn hình laptop không bật.</value>
   </data>
@@ -541,6 +606,9 @@ Xin chân thành cảm ơn!</value>
   </data>
   <data name="Exit" xml:space="preserve">
     <value>Thoát</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Xuất ra</value>
   </data>
   <data name="ExtendedHybridModeInfoWindow_Auto_Message" xml:space="preserve">
     <value>Chỉ sử dụng GPU tích hợp khi chạy trên nguồn pin và dùng cả hai GPU khi được nối với nguồn điện. Khi sử dụng sạc công suất thấp, hệ thống sẽ đổi sang Hybrid- chỉ GPU tích hợp.</value>
@@ -700,6 +768,9 @@ CẢNH BÁO: Hành động sẽ không chạy nếu màn hình laptop tắt.</va
   <data name="HDRControl_Warning" xml:space="preserve">
     <value>HDR không thể bật do cài đặt trong Windows.</value>
   </data>
+  <data name="Import" xml:space="preserve">
+    <value>Nhập vào</value>
+  </data>
   <data name="IncompatibleDevice_Message" xml:space="preserve">
     <value>Thiết bị này không tương thích với Lenovo Legion Toolkit.</value>
   </data>
@@ -797,14 +868,14 @@ CẢNH BÁO: Hành động sẽ không chạy nếu màn hình laptop tắt.</va
     <value>Numlock bật</value>
   </data>
   <data name="Notification_SpectrumKeyboardBacklight_Backlight" xml:space="preserve">
-		<value>Đèn nền bàn phím {0}</value>
-	</data>
+    <value>Đèn nền bàn phím {0}</value>
+  </data>
   <data name="Notification_SpectrumKeyboardBacklight_Brightness" xml:space="preserve">
-		<value>Độ sáng {0}</value>
-	</data>
+    <value>Độ sáng {0}</value>
+  </data>
   <data name="Notification_SpectrumKeyboardBacklight_Profile" xml:space="preserve">
-		<value>Cấu hình {0}</value>
-	</data>
+    <value>Cấu hình {0}</value>
+  </data>
   <data name="Notification_TouchpadOff" xml:space="preserve">
     <value>Touchpad tắt</value>
   </data>
@@ -838,6 +909,9 @@ Bật tùy chọn này nếu có xung đột với các ứng dụng chạy toà
   </data>
   <data name="NotificationsSettingsWindow_Microphone" xml:space="preserve">
     <value>Microphone</value>
+  </data>
+  <data name="NotificationsSettingsWindow_NotificationPosition_Title" xml:space="preserve">
+    <value>Vị trí</value>
   </data>
   <data name="NotificationsSettingsWindow_PowerMode" xml:space="preserve">
     <value>Chế độ</value>
@@ -893,6 +967,9 @@ Bật tùy chọn này nếu có xung đột với các ứng dụng chạy toà
   <data name="PackageControl_HttpGeneralError_Title" xml:space="preserve">
     <value>Đã có lỗi xảy ra</value>
   </data>
+  <data name="PackageControl_IsUpdateInfo" xml:space="preserve">
+    <value>Có cập nhật mới!</value>
+  </data>
   <data name="PackageControl_OldPackageWarning" xml:space="preserve">
     <value>Gói cài đặt này đã hơn 1 năm tuổi.</value>
   </data>
@@ -902,9 +979,6 @@ Bật tùy chọn này nếu có xung đột với các ứng dụng chạy toà
   <data name="PackagesPage_Disclaimer_Message" xml:space="preserve">
     <value>Dưới đây là danh sách các gói cài đặt được đánh dấu là tương thích với laptop của bạn.
 Luôn kiểm tra rằng bạn cài đặt đúng gói cài đặt mong muốn.</value>
-  </data>
-  <data name="PackagesPage_Disclaimer_Title" xml:space="preserve">
-    <value>Quan trọng</value>
   </data>
   <data name="PackagesPage_DownloadFailed_Message" xml:space="preserve">
     <value>Kiểm tra Mã máy và Hệ điều hành được đặt đúng.</value>
@@ -933,14 +1007,14 @@ Luôn kiểm tra rằng bạn cài đặt đúng gói cài đặt mong muốn.</
   <data name="PackagesPage_PrimarySource" xml:space="preserve">
     <value>Chính (Khuyên Dùng)</value>
   </data>
-  <data name="PackagesPage_PrimarySource_ToolTip" xml:space="preserve">
+  <data name="PackagesPage_PrimarySource_Message" xml:space="preserve">
     <value>Tương tự như trên Lenovo PC Support</value>
   </data>
   <data name="PackagesPage_SecondarySource" xml:space="preserve">
     <value>Phụ</value>
   </data>
-  <data name="PackagesPage_SecondarySource_ToolTip" xml:space="preserve">
-    <value>Tương tự như Lenovo DriverGrabber</value>
+  <data name="PackagesPage_SecondarySource_Message" xml:space="preserve">
+    <value>Tương tự như trên Lenovo PC Support</value>
   </data>
   <data name="PackagesPage_Sort_Category" xml:space="preserve">
     <value>Danh mục</value>
@@ -999,6 +1073,9 @@ Bạn có thể chuyển đổi giữa các Chế độ với Fn+Q.</value>
   </data>
   <data name="PowerPlansWindow_CustomMode" xml:space="preserve">
     <value>Tùy Chỉnh</value>
+  </data>
+  <data name="PowerPlansWindow_DefaultPowerPlan" xml:space="preserve">
+    <value>Mặc định</value>
   </data>
   <data name="PowerPlansWindow_PerformanceMode" xml:space="preserve">
     <value>Hiệu Suất</value>
@@ -1250,7 +1327,7 @@ Nên khởi động lại sau khi thay đổi tùy chọn này.</value>
   <data name="SpectrumKeyboardBacklightControl_ApplyProfileError_Title" xml:space="preserve">
     <value>Không thể áp dụng cấu hình</value>
   </data>
-  <data name="SpectrumKeyboardBacklightControl_ApplyProfileError_Title_Message" xml:space="preserve">
+  <data name="SpectrumKeyboardBacklightControl_ApplyProfileError_Message" xml:space="preserve">
     <value>Cấu hình đèn nền không thể được áp dụng.</value>
   </data>
   <data name="SpectrumKeyboardBacklightControl_Brightness_Title" xml:space="preserve">
@@ -1262,12 +1339,24 @@ Nên khởi động lại sau khi thay đổi tùy chọn này.</value>
   <data name="SpectrumKeyboardBacklightControl_Effects" xml:space="preserve">
     <value>Hiệu ứng</value>
   </data>
+  <data name="SpectrumKeyboardBacklightControl_ExportProfileError_Message" xml:space="preserve">
+    <value>Không thể xuất profile</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_ExportProfileError_Title" xml:space="preserve">
+    <value>Không thể xuất profile</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_ImportProfileError_Message" xml:space="preserve">
+    <value>Cấu hình không thể được nhập vào</value>
+  </data>
+  <data name="SpectrumKeyboardBacklightControl_ImportProfileError_Title" xml:space="preserve">
+    <value>Không thể nhập cấu hình</value>
+  </data>
   <data name="SpectrumKeyboardBacklightControl_NoEffects_Text" xml:space="preserve">
     <value>Không có hiệu ứng nào được thêm.</value>
   </data>
   <data name="SpectrumKeyboardBacklightControl_ResetToDefault_Tooltip" xml:space="preserve">
-		<value>Khôi phục về mặc định</value>
-	</data>
+    <value>Khôi phục về mặc định</value>
+  </data>
   <data name="SpectrumKeyboardBacklightControl_SelectAll_ToolTip" xml:space="preserve">
     <value>Chọn tất cả các vùng</value>
   </data>
@@ -1407,7 +1496,7 @@ Logging sẽ được tự động bật, nếu bạn chọn tiếp tục.</valu
     <value>Bạn có thể thay đổi độ sáng đèn nền phím bằng Fn+Space</value>
   </data>
   <data name="WhiteKeyboardBacklightControl_Title" xml:space="preserve">
-    <value>Độ sáng</value>
+    <value>Đèn nền bàn phím</value>
   </data>
   <data name="WinKeyAutomationStepControl_Message" xml:space="preserve">
     <value>Bật hoặc tắt phím Windows.</value>
@@ -1423,5 +1512,127 @@ Logging sẽ được tự động bật, nếu bạn chọn tiếp tục.</valu
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Có</value>
+  </data>
+  <data name="MicrophoneControl_Title" xml:space="preserve">
+    <value>Microphone</value>
+  </data>
+  <data name="MicrophoneControl_Message" xml:space="preserve">
+    <value>Khi tắt, microphone sẽ bị tắt tiếng.</value>
+  </data>
+  <data name="MicrophoneAutomationStepControl_Title" xml:space="preserve">
+    <value>Microphone</value>
+  </data>
+  <data name="MicrophoneAutomationStepControl_Message" xml:space="preserve">
+    <value>Khi tắt, microphone sẽ bị tắt tiếng.</value>
+  </data>
+  <data name="ResolutionControl_Title" xml:space="preserve">
+    <value>Độ phân giải</value>
+  </data>
+  <data name="ResolutionControl_Message" xml:space="preserve">
+    <value>Thay đổi độ phân giải màn hình laptop.</value>
+  </data>
+  <data name="ResolutionAutomationStepControl_Title" xml:space="preserve">
+    <value>Độ phân giải</value>
+  </data>
+  <data name="ResolutionAutomationStepControl_Message" xml:space="preserve">
+    <value>Thay đổi độ phân giải màn hình laptop.
+
+CẢNH BẢO! Hành động sẽ không chạy nếu màn hình laptop tắt.</value>
+  </data>
+  <data name="DpiScaleControl_Title" xml:space="preserve">
+    <value>DPI</value>
+  </data>
+  <data name="DpiScaleControl_Message" xml:space="preserve">
+    <value>Thay đổi scaling màn hình laptop.</value>
+  </data>
+  <data name="DpiScaleAutomationStepControl_Title" xml:space="preserve">
+    <value>DPI</value>
+  </data>
+  <data name="DpiScaleAutomationStepControl_Message" xml:space="preserve">
+    <value>Thay đổi scaling màn hình laptop.
+
+CẢNH BÁO! Hành động sẽ không chạy nếu màn hình laptop tắt.</value>
+  </data>
+  <data name="DashboardPage_Display_Title" xml:space="preserve">
+    <value>Màn hình</value>
+  </data>
+  <data name="OneLevelWhiteKeyboardBacklightControl_Title" xml:space="preserve">
+    <value>Đèn nền bàn phím</value>
+  </data>
+  <data name="OneLevelWhiteKeyboardBacklightControl_Message" xml:space="preserve">
+    <value>Bạn có thể bật tắt đèn nền bàn phím với FN+Space.</value>
+  </data>
+  <data name="OneLevelWhiteKeyboardBacklightAutomationStepControl_Title" xml:space="preserve">
+    <value>Đèn nền bàn phím</value>
+  </data>
+  <data name="OneLevelWhiteKeyboardBacklightAutomationStepControl_Message" xml:space="preserve">
+    <value>Tắt hoặc bật đèn nền bàn phím.</value>
+  </data>
+  <data name="PackagesPage_NoMatchingDownloads" xml:space="preserve">
+    <value>Không tìm thấy gói tải xuống phù hợp</value>
+  </data>
+  <data name="PackagesPage_OnlyShowUpdates" xml:space="preserve">
+    <value>Chỉ hiện cập nhật</value>
+  </data>
+  <data name="EditDashboardWindow_Title" xml:space="preserve">
+    <value>Tùy biến trang chủ</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Đặt lại</value>
+  </data>
+  <data name="EditDashboardWindow_CreateGroup_Title" xml:space="preserve">
+    <value>Tạo nhóm</value>
+  </data>
+  <data name="EditDashboardWindow_CreateGroup_Message" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="EditDashboardWindow_Disclaimer_Message" xml:space="preserve">
+    <value>Một số chức năng sẽ không xuất hiện trên Trang Chủ tùy vào trạng thái và cấu hình của Laptop.</value>
+  </data>
+  <data name="DashboardPage_Customize" xml:space="preserve">
+    <value>Tùy chỉnh</value>
+  </data>
+  <data name="TurnOffMonitorsControl_Title" xml:space="preserve">
+    <value>Tắt các màn hình</value>
+  </data>
+  <data name="TurnOffMonitorsControl_Message" xml:space="preserve">
+    <value>Tắt tất cả các màn hình được kết nối. 
+Di chuyển chuột hoặc bấm phím bất kỳ trên bàn phím để bật màn hình.</value>
+  </data>
+  <data name="TurnOffMonitorsControl_TurnOff" xml:space="preserve">
+    <value>Tắt</value>
+  </data>
+  <data name="TurnOffMonitorsAutomationStepControl_Title" xml:space="preserve">
+    <value>Tắt các màn hình</value>
+  </data>
+  <data name="TurnOffMonitorsAutomationStepControl_Message" xml:space="preserve">
+    <value>Tắt tất cả các màn hình.</value>
+  </data>
+  <data name="EditDashboardGroupControl_EditGroup_Title" xml:space="preserve">
+    <value>Sửa tên nhóm</value>
+  </data>
+  <data name="EditDashboardGroupControl_EditGroup_Message" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="Notification_PanelLogoLightingOn" xml:space="preserve">
+    <value>Đèn Logo bật</value>
+  </data>
+  <data name="Notification_PanelLogoLightingOff" xml:space="preserve">
+    <value>Đèn Logo tắt</value>
+  </data>
+  <data name="Notification_PortLightingOn" xml:space="preserve">
+    <value>Đèn I/O bật</value>
+  </data>
+  <data name="Notification_PortLightingOff" xml:space="preserve">
+    <value>Đèn I/O tắt</value>
+  </data>
+  <data name="PackageControl_RebootRequired" xml:space="preserve">
+    <value>Yêu cầu khởi động lại</value>
+  </data>
+  <data name="PackageControl_ShutdownRequired" xml:space="preserve">
+    <value>Yêu cầu tắt máy</value>
+  </data>
+  <data name="PackageControl_RebootRecommended" xml:space="preserve">
+    <value>Khuyến nghị khởi động lại</value>
   </data>
 </root>

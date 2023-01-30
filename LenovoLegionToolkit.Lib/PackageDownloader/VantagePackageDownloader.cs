@@ -5,10 +5,12 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using LenovoLegionToolkit.Lib.PackageDownloader.Detectors;
+using LenovoLegionToolkit.Lib.Utils;
 
 namespace LenovoLegionToolkit.Lib.PackageDownloader;
 
-public class CommercialPackageDownloader : AbstractPackageDownloader
+public class VantagePackageDownloader : AbstractPackageDownloader
 {
     private readonly struct PackageDefinition
     {
@@ -20,8 +22,6 @@ public class CommercialPackageDownloader : AbstractPackageDownloader
 
     public override async Task<List<Package>> GetPackagesAsync(string machineType, OS os, IProgress<float>? progress = null, CancellationToken token = default)
     {
-        using var httpClient = new HttpClient();
-
         progress?.Report(0);
 
         var osString = os switch
@@ -33,7 +33,13 @@ public class CommercialPackageDownloader : AbstractPackageDownloader
             _ => throw new ArgumentOutOfRangeException(nameof(os), os, null)
         };
 
+        using var httpClient = new HttpClient();
+
         var packageDefinitions = await GetPackageDefinitionsAsync(httpClient, $"{_catalogBaseUrl}/{machineType}_{osString}.xml", token).ConfigureAwait(false);
+
+        var updateDetector = new VantagePackageUpdateDetector();
+        if (FeatureFlags.CheckUpdates)
+            await updateDetector.BuildDriverInfoCache().ConfigureAwait(false);
 
         var count = 0;
         var totalCount = packageDefinitions.Count;
@@ -41,7 +47,7 @@ public class CommercialPackageDownloader : AbstractPackageDownloader
         var packages = new List<Package>();
         foreach (var packageDefinition in packageDefinitions)
         {
-            var package = await GetPackage(httpClient, packageDefinition, token).ConfigureAwait(false);
+            var package = await GetPackage(httpClient, updateDetector, packageDefinition, token).ConfigureAwait(false);
             packages.Add(package);
 
             count++;
@@ -79,10 +85,10 @@ public class CommercialPackageDownloader : AbstractPackageDownloader
         return packageDefinitions;
     }
 
-    private async Task<Package> GetPackage(HttpClient httpClient, PackageDefinition packageDefinition, CancellationToken token)
+    private async Task<Package> GetPackage(HttpClient httpClient, VantagePackageUpdateDetector updateDetector, PackageDefinition packageDefinition, CancellationToken token)
     {
         var location = packageDefinition.Location;
-        var baseLocation = location.Remove(location.LastIndexOf("/"));
+        var baseLocation = location.Remove(location.LastIndexOf("/", StringComparison.InvariantCultureIgnoreCase));
 
         var packageString = await httpClient.GetStringAsync(location, token).ConfigureAwait(false);
 
@@ -100,6 +106,24 @@ public class CommercialPackageDownloader : AbstractPackageDownloader
         var readmeName = document.SelectSingleNode("/Package/Files/Readme/File/Name")?.InnerText;
         var readme = await GetReadmeAsync(httpClient, $"{baseLocation}/{readmeName}", token).ConfigureAwait(false);
         var fileLocation = $"{baseLocation}/{fileName}";
+        var rebootString = document.SelectSingleNode("/Package/Reboot/@type")!.InnerText;
+        var reboot = int.TryParse(rebootString, out var rebootInt) ? (RebootType)rebootInt : RebootType.NotRequired;
+
+        var isUpdate = false;
+        if (FeatureFlags.CheckUpdates)
+        {
+            try
+            {
+                isUpdate = await updateDetector.DetectAsync(httpClient, document, baseLocation, token)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (Log.Instance.IsTraceEnabled)
+                    Log.Instance.Trace($"Couldn't detect update for package {id}. [title={title}, location={location}]",
+                        ex);
+            }
+        }
 
         return new()
         {
@@ -113,6 +137,8 @@ public class CommercialPackageDownloader : AbstractPackageDownloader
             ReleaseDate = releaseDate,
             Readme = readme,
             FileLocation = fileLocation,
+            IsUpdate = isUpdate,
+            Reboot = reboot
         };
     }
 }

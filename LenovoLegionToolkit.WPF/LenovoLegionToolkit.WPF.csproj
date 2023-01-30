@@ -24,7 +24,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<NeutralLanguage>en</NeutralLanguage>
-		<SatelliteResourceLanguages>ar;cs;de;en;el;es;fr;it;nl;nl-nl;pt;pt-br;ro;ru;ukr;tr;vi;zh;zh-hans</SatelliteResourceLanguages>
+		<SatelliteResourceLanguages>ar;cs;de;en;el;es;fr;it;nl;nl-nl;pt;pt-br;ro;ru;sk;ukr;tr;vi;zh;zh-hans</SatelliteResourceLanguages>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 	  <DebugType>portable</DebugType>
@@ -34,6 +34,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Autofac" Version="6.5.0" />
+		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
 		<PackageReference Include="Humanizer" Version="2.14.1" />
 		<PackageReference Include="Markdig" Version="0.30.4" />
 		<PackageReference Include="Markdig.Wpf" Version="0.5.0.1" />

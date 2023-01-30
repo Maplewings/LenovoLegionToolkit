@@ -35,6 +35,7 @@ public class ApplicationSettings : AbstractSettings<ApplicationSettings.Applicat
         public AccentColorSource AccentColorSource { get; set; }
         public Dictionary<PowerModeState, string> PowerPlans { get; set; } = new();
         public bool MinimizeOnClose { get; set; }
+        public WindowSize? WindowSize { get; set; }
         public bool ActivatePowerProfilesWithVantageEnabled { get; set; }
         public bool DontShowNotifications { get; set; }
         public NotificationPosition NotificationPosition { get; set; }
@@ -51,5 +52,5 @@ public class ApplicationSettings : AbstractSettings<ApplicationSettings.Applicat
 
     protected override string FileName => "settings.json";
 
-    public override ApplicationSettingsStore Default => new();
+    protected override ApplicationSettingsStore Default => new();
 }

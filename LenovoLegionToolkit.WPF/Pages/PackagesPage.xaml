@@ -33,11 +33,12 @@
 
             <wpfui:CardControl
                 Grid.Row="1"
-                Margin="0,0,16,24"
+                Margin="0,0,16,8"
                 FocusVisualStyle="{DynamicResource DefaultControlFocusVisualStyle}">
                 <wpfui:CardControl.Header>
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -101,7 +102,10 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <wpfui:TextBox x:Name="_downloadToText" Grid.Column="0" />
+                            <wpfui:TextBox
+                                x:Name="_downloadToText"
+                                Grid.Column="0"
+                                TextChanged="DownloadToText_OnTextChanged" />
 
                             <wpfui:Button
                                 Grid.Column="1"
@@ -121,29 +125,39 @@
 
                         <StackPanel
                             Grid.Row="0"
-                            Grid.RowSpan="2"
-                            Grid.Column="4"
+                            Grid.RowSpan="3"
+                            Grid.Column="3"
                             HorizontalAlignment="Right">
 
                             <TextBlock Margin="0,0,0,4" Text="{x:Static resources:Resource.PackagesPage_Source}" />
                             <RadioButton
                                 x:Name="_sourcePrimaryRadio"
-                                Content="{x:Static resources:Resource.PackagesPage_PrimarySource}"
                                 GroupName="source"
-                                IsChecked="True"
-                                ToolTip="{x:Static resources:Resource.PackagesPage_PrimarySource_ToolTip}" />
-                            <RadioButton
-                                x:Name="_sourceSecondaryRadio"
-                                Content="{x:Static resources:Resource.PackagesPage_SecondarySource}"
-                                GroupName="source"
-                                ToolTip="{x:Static resources:Resource.PackagesPage_SecondarySource_ToolTip}" />
+                                IsChecked="True">
+                                <StackPanel>
+                                    <TextBlock Text="{x:Static resources:Resource.PackagesPage_PrimarySource}" />
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                        Text="{x:Static resources:Resource.PackagesPage_PrimarySource_Message}" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton x:Name="_sourceSecondaryRadio" GroupName="source">
+                                <StackPanel>
+                                    <TextBlock Text="{x:Static resources:Resource.PackagesPage_SecondarySource}" />
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                        Text="{x:Static resources:Resource.PackagesPage_SecondarySource_Message}" />
+                                </StackPanel>
+                            </RadioButton>
 
                         </StackPanel>
 
                         <wpfui:Button
                             x:Name="_downloadPackagesButton"
-                            Grid.Row="2"
-                            Grid.Column="4"
+                            Grid.Row="3"
+                            Grid.Column="3"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
                             Appearance="Primary"
@@ -153,8 +167,8 @@
 
                         <wpfui:Button
                             x:Name="_cancelDownloadPackagesButton"
-                            Grid.Row="2"
-                            Grid.Column="4"
+                            Grid.Row="3"
+                            Grid.Column="3"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
                             Appearance="Secondary"
@@ -175,24 +189,20 @@
 
                     <StackPanel>
 
-                        <wpfui:CardControl Margin="0,0,16,16" Icon="Info24">
+                        <wpfui:CardControl
+                            x:Name="_infoBar"
+                            Margin="0,0,16,8"
+                            Icon="Info24">
                             <wpfui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock
-                                        Margin="0,0,0,4"
-                                        FontWeight="Medium"
-                                        Text="{x:Static resources:Resource.PackagesPage_Disclaimer_Title}" />
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                        Text="{x:Static resources:Resource.PackagesPage_Disclaimer_Message}" />
-                                </StackPanel>
+                                <TextBlock Text="{x:Static resources:Resource.PackagesPage_Disclaimer_Message}" TextWrapping="Wrap" />
                             </wpfui:CardControl.Header>
+                            <wpfui:Button Click="InfoBarDismissButton_Click" Icon="Dismiss24" />
                         </wpfui:CardControl>
 
                         <Grid Margin="0,0,16,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="300" />
+                                <ColumnDefinition Width="250" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
@@ -205,9 +215,17 @@
                                 PlaceholderText="{x:Static resources:Resource.PackagesPage_Filter}"
                                 TextChanged="FilterTextBox_TextChanged" />
 
+                            <CheckBox
+                                x:Name="_onlyShowUpdatesCheckBox"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                Checked="OnlyShowUpdatesCheckBox_OnChecked"
+                                Content="{x:Static resources:Resource.PackagesPage_OnlyShowUpdates}"
+                                Unchecked="OnlyShowUpdatesCheckBox_OnChecked" />
+
                             <ComboBox
                                 x:Name="_sortingComboBox"
-                                Grid.Column="2"
+                                Grid.Column="3"
                                 MaxDropDownHeight="Auto"
                                 SelectedIndex="2"
                                 SelectionChanged="SortingComboBox_SelectionChanged">

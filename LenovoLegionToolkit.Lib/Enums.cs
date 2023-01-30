@@ -116,6 +116,19 @@ public enum LightingChangeState
     Ports = 1,
 }
 
+public enum MicrophoneState
+{
+    Off,
+    On
+}
+
+public enum NativeWindowsMessage
+{
+    MonitorConnected,
+    MonitorDisconnected,
+    OnDisplayDeviceArrival
+}
+
 public enum NotificationDuration
 {
     Short,
@@ -137,6 +150,10 @@ public enum NotificationType
     MicrophoneOn,
     NumLockOn,
     NumLockOff,
+    PanelLogoLightingOn,
+    PanelLogoLightingOff,
+    PortLightingOn,
+    PortLightingOff,
     PowerModeQuiet,
     PowerModeBalance,
     PowerModePerformance,
@@ -176,6 +193,12 @@ public enum NotificationPosition
     CenterRight,
     [Display(ResourceType = typeof(Resource), Name = "NotificationPosition_Center")]
     Center
+}
+
+public enum OneLevelWhiteKeyboardBacklightState
+{
+    Off,
+    On
 }
 
 public enum OS
@@ -219,6 +242,15 @@ public enum ProcessEventInfoType
 {
     Started,
     Stopped
+}
+
+public enum RebootType
+{
+    NotRequired = 0,
+    Forced = 1,
+    Requested = 3,
+    ForcedPowerOff = 4,
+    Delayed = 5
 }
 
 public enum RGBKeyboardBacklightChanged { }
@@ -286,6 +318,8 @@ public enum SpecialKey
     CameraOff = 13,
     FnR = 16,
     FnR2 = 0x0041002A,
+    PanelLogoLightingOn = 20,
+    PanelLogoLightingOff = 21,
     SpectrumBacklightOff = 24,
     SpectrumBacklight1 = 25,
     SpectrumBacklight2 = 26,
@@ -399,7 +433,10 @@ public enum TemperatureUnit
 
 public enum ThermalModeState
 {
-    IrrelevantAndBuggy
+    Unknown,
+    Quiet,
+    Balanced,
+    Performance
 }
 
 public enum TouchpadLockState

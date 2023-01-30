@@ -32,19 +32,18 @@ public class ContextMenuHelper
     public Action? BringToForeground { get; set; }
     public Func<Task>? Close { get; set; }
 
-    private static ContextMenuHelper? _instance;
-
-    public static ContextMenuHelper Instance => _instance ??= new ContextMenuHelper();
-
-    private ContextMenuHelper()
+    public ContextMenuHelper()
     {
-        ContextMenu = new ContextMenu();
+        ContextMenu = new ContextMenu
+        {
+            FontSize = 14
+        };
 
         var openMenuItem = new MenuItem { Header = Resource.Open, Tag = StaticTag };
-        openMenuItem.Click += (s, e) => BringToForeground?.Invoke();
+        openMenuItem.Click += (_, _) => BringToForeground?.Invoke();
 
         var closeMenuItem = new MenuItem { Header = Resource.Close, Tag = StaticTag };
-        closeMenuItem.Click += async (s, e) =>
+        closeMenuItem.Click += async (_, _) =>
         {
             if (Close is not null)
                 await Close.Invoke();
@@ -61,8 +60,8 @@ public class ContextMenuHelper
         var pipelines = await _automationProcessor.GetPipelinesAsync();
         await RefreshAutomationMenuItemsAsync(pipelines);
 
-        _automationProcessor.PipelinesChanged += async (s, e) => await RefreshAutomationMenuItemsAsync(e);
-        _themeManager.ThemeApplied += async (s, e) =>
+        _automationProcessor.PipelinesChanged += async (_, e) => await RefreshAutomationMenuItemsAsync(e);
+        _themeManager.ThemeApplied += async (_, _) =>
         {
             var pipelines = await _automationProcessor.GetPipelinesAsync();
             await RefreshAutomationMenuItemsAsync(pipelines);
@@ -89,7 +88,7 @@ public class ContextMenuHelper
                     Header = menuPipeline.Name ?? Resource.Unnamed,
                     Tag = QuickActionsTag,
                 };
-                item.Click += async (s, e) =>
+                item.Click += async (_, _) =>
                 {
                     try
                     {
@@ -126,7 +125,7 @@ public class ContextMenuHelper
                 Header = item.Content,
                 Tag = NavigationTag
             };
-            menuItem.Click += async (s, e) =>
+            menuItem.Click += async (_, _) =>
             {
                 ContextMenu.IsOpen = false;
                 BringToForeground?.Invoke();

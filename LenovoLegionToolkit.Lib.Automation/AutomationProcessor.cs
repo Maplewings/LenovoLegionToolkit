@@ -17,7 +17,7 @@ public class AutomationProcessor
 {
     private readonly AutomationSettings _settings;
     private readonly DisplayConfigurationListener _displayConfigurationListener;
-    private readonly ExternalDisplayListener _externalDisplayListener;
+    private readonly NativeWindowsMessageListener _nativeWindowsMessageListener;
     private readonly PowerStateListener _powerStateListener;
     private readonly PowerModeListener _powerModeListener;
     private readonly ProcessAutomationListener _processListener;
@@ -35,7 +35,7 @@ public class AutomationProcessor
 
     public AutomationProcessor(AutomationSettings settings,
         DisplayConfigurationListener displayConfigurationListener,
-        ExternalDisplayListener externalDisplayListener,
+        NativeWindowsMessageListener nativeWindowsMessageListener,
         PowerStateListener powerStateListener,
         PowerModeListener powerModeListener,
         ProcessAutomationListener processListener,
@@ -43,7 +43,7 @@ public class AutomationProcessor
     {
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _displayConfigurationListener = displayConfigurationListener ?? throw new ArgumentNullException(nameof(displayConfigurationListener));
-        _externalDisplayListener = externalDisplayListener ?? throw new ArgumentNullException(nameof(externalDisplayListener));
+        _nativeWindowsMessageListener = nativeWindowsMessageListener ?? throw new ArgumentNullException(nameof(nativeWindowsMessageListener));
         _powerStateListener = powerStateListener ?? throw new ArgumentNullException(nameof(powerStateListener));
         _powerModeListener = powerModeListener ?? throw new ArgumentNullException(nameof(powerModeListener));
         _processListener = processListener ?? throw new ArgumentNullException(nameof(processListener));
@@ -57,8 +57,7 @@ public class AutomationProcessor
         using (await _ioLock.LockAsync().ConfigureAwait(false))
         {
             _displayConfigurationListener.Changed += DisplayConfigurationListener_Changed;
-            _externalDisplayListener.OnConnected += ExternalDisplayListener_OnConnected;
-            _externalDisplayListener.OnDisconnected += ExternalDisplayListener_OnDisconnected;
+            _nativeWindowsMessageListener.Changed += NativeWindowsMessageListener_Changed;
             _powerStateListener.Changed += PowerStateListener_Changed;
             _powerModeListener.Changed += PowerModeListenerOnChanged;
             _processListener.Changed += ProcessListener_Changed;
@@ -249,15 +248,9 @@ public class AutomationProcessor
         await ProcessEvent(e).ConfigureAwait(false);
     }
 
-    private async void ExternalDisplayListener_OnConnected(object? sender, EventArgs _)
+    private async void NativeWindowsMessageListener_Changed(object? sender, NativeWindowsMessage message)
     {
-        var e = new ExternalDisplayConnectedAutomationEvent();
-        await ProcessEvent(e).ConfigureAwait(false);
-    }
-
-    private async void ExternalDisplayListener_OnDisconnected(object? sender, EventArgs _)
-    {
-        var e = new ExternalDisplayDisconnectedAutomationEvent();
+        var e = new NativeWindowsMessageEvent { Message = message };
         await ProcessEvent(e).ConfigureAwait(false);
     }
 
@@ -308,11 +301,11 @@ public class AutomationProcessor
         await RunAsync(e).ConfigureAwait(false);
     }
 
-    private async Task ProcessEvent(ExternalDisplayConnectedAutomationEvent e)
+    private async Task ProcessEvent(NativeWindowsMessageEvent e)
     {
         var potentialMatch = _pipelines.Select(p => p.Trigger)
             .Where(t => t is not null)
-            .Where(t => t is IExternalDisplayConnectedAutomationPipelineTrigger)
+            .Where(t => t is INativeWindowsMessagePipelineTrigger)
             .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
             .Select(t => t.Result)
             .Where(t => t)
@@ -322,26 +315,7 @@ public class AutomationProcessor
             return;
 
         if (Log.Instance.IsTraceEnabled)
-            Log.Instance.Trace($"Processing external display connected event.");
-
-        await RunAsync(e).ConfigureAwait(false);
-    }
-
-    private async Task ProcessEvent(ExternalDisplayDisconnectedAutomationEvent e)
-    {
-        var potentialMatch = _pipelines.Select(p => p.Trigger)
-            .Where(t => t is not null)
-            .Where(t => t is IExternalDisplayDisconnectedAutomationPipelineTrigger)
-            .Select(async t => await t!.IsSatisfiedAsync(e).ConfigureAwait(false))
-            .Select(t => t.Result)
-            .Where(t => t)
-            .Any();
-
-        if (!potentialMatch)
-            return;
-
-        if (Log.Instance.IsTraceEnabled)
-            Log.Instance.Trace($"Processing external display disconnected event.");
+            Log.Instance.Trace($"Processing power state event.");
 
         await RunAsync(e).ConfigureAwait(false);
     }

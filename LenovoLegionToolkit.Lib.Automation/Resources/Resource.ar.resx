@@ -86,7 +86,7 @@
     <value>عند تغير وضع الطاقة</value>
   </data>
   <data name="ProcessesAreRunningAutomationPipelineTrigger_DisplayName" xml:space="preserve">
-    <value>عندما يعمل تطبيق</value>
+    <value>عندما يبدأ التطبيق</value>
   </data>
   <data name="ProcessesStopRunningAutomationPipelineTrigger_DisplayName" xml:space="preserve">
     <value>عندما يغلق تطبيق</value>
@@ -94,4 +94,10 @@
   <data name="TimeAutomationPipelineTrigger_DisplayName" xml:space="preserve">
     <value>عند أوقات محددة</value>
   </data>
+  <data name="ExternalDisplayConnectedAutomationPipelineTrigger_DisplayName" xml:space="preserve">
+		<value>عند توصيل شاشة خارجية</value>
+	</data>
+  <data name="ExternalDisplayDisconnectedAutomationPipelineTrigger_DisplayName" xml:space="preserve">
+		<value>عند فصل الشاشة الخارجية</value>
+	</data>
 </root>
